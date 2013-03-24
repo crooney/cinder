@@ -24,7 +24,7 @@ $(TARGET): build $(SOURCE) $(DEPENDS)
 
 examples: $(EX_SVG) $(EX_HTML) $(TARGET) $(EXAMPLES)
 
-release: FAYFLAGS=--closure --no-builtins -O
+release: FAYFLAGS=--closure --no-builtins -O --include src
 release: clean all
 
 %.js: %.hs
