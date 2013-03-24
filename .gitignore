@@ -1,0 +1,13 @@
+*
+!Makefile
+!README*
+!LICENSE*
+!.gitignore
+!template*
+!src
+!src/*
+!examples
+!examples/*
+!util/
+!util/*
+
