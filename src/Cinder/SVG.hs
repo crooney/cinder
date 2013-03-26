@@ -6,11 +6,13 @@ import Prelude hiding (min, max)
 import FFI
 import Cinder.DSL
 import Cinder.DOM
-import Cinder.SVG.Attributes
+import Cinder.SVG.Attributes hiding (path)
 import Cinder.SVG.Elements
 
 xmlns :: String
 xmlns = "http://www.w3.org/2000/svg"
+
+-- convenience methods for simple shapes
 
 cR :: a -> Markup
 cR r = markup ! circle ! rN r
@@ -43,6 +45,8 @@ lXXYY :: a -> a -> a -> a -> Markup
 -- I know it looks stupid w/o y' but hlint wants I should eta reduce
 lXXYY x x' y = lXYXY x y x'
 
+--path stuff
+
 data Seg = M Double Double
          | L Double Double
          | H Double
@@ -67,6 +71,37 @@ dS = d . showD
 dSR :: [Seg] -> Primitive
 dSR = d . showDRelative
 
+pathD :: [Seg] -> Markup
+pathD ss = markup ! path ! dS ss
+
+pathDR :: [Seg] -> Markup
+pathDR ss = markup ! path ! dSR ss
+
+-- transform stuff
+
+data Transform = Translate Double Double
+               | Rotate Double Double Double
+               | Scale Double
+               | Scale2d Double Double
+
+transformType :: Transform -> String
+transformType Translate {} = "translate"
+transformType Rotate {}    = "rotate"
+transformType Scale {}     = "scale"
+transformType Scale2d {}   = "scale"
+
+transformVals :: Transform -> String
+transformVals (Translate x y) = show x ++ "," ++ show y
+transformVals (Rotate x y z)  = show x ++ "," ++ show y ++ "," ++ show z
+transformVals (Scale x)       = show x
+transformVals (Scale2d x y)   = show x ++ "," ++ show y
+
+transformT :: [Transform] -> Primitive
+transformT ts = transform $ intercalate "," $ map go ts
+    where go t = transformType t ++ "(" ++ transformVals t ++ ")"
+
+-- animation stuff
+
 setATB :: String -> String -> a -> Markup
 setATB a t b = markup ! set ! attributeName a ! to t ! beginN b
 
@@ -77,6 +112,10 @@ animationADR a d r = markup ! attributeName a ! durN d ! repeatCount (go r)
 
 aADR :: String -> a -> Double -> Markup
 aADR a d r = markup ! animate !+ animationADR a d r
+
+atDRT :: a -> Double -> [Transform] -> Markup
+atDRT d r ts = markup ! animateTransform !+ animationADR "transform" d r
+                ! at "type" (transformType $ head ts) ! vs (map transformVals ts)
 
 beIndef :: Markup
 beIndef = markup ! begin "indefinite" ! end "indefinite"
@@ -91,7 +130,7 @@ vsN :: [a] -> Primitive
 vsN = vs . map show
 
 pc :: a -> String
-pc x = show x ++ "%"
+pc = (++"%") . show
 
 --non-pure SVG specific stuff (animations and namespaces, mostly)
 insert :: Markup -> Node -> Fay Node
@@ -119,136 +158,136 @@ hShow x = inst x ++ concatMap (`slot` x) [1 .. 8]
 -- Simple combinators for conversion to string.  Nothing interesting
 -- follows.
 beginN :: a -> Primitive
-beginN x = begin (show x)
+beginN = begin . show
 
 cxN :: a -> Primitive
-cxN x = cx (show x)
+cxN = cx . show
 
 cyN :: a -> Primitive
-cyN x = cy (show x)
+cyN = cy . show
 
 divisorN :: a -> Primitive
-divisorN x = divisor (show x)
+divisorN = divisor . show
 
 durN :: a -> Primitive
-durN x = dur (show x)
+durN = dur . show
 
 dxN :: a -> Primitive
-dxN x = dx (show x)
+dxN = dx . show
 
 dyN :: a -> Primitive
-dyN x = dy (show x)
+dyN = dy . show
 
 elevationN :: a -> Primitive
-elevationN x = elevation (show x)
+elevationN = elevation . show
 
 endN :: a -> Primitive
-endN x = end (show x)
+endN = end . show
 
 exponentN :: a -> Primitive
-exponentN x = exponent (show x)
+exponentN = exponent . show
 
 fromN :: a -> Primitive
-fromN x = from (show x)
+fromN = from . show
 
 fxN :: a -> Primitive
-fxN x = fx (show x)
+fxN = fx . show
 
 fyN :: a -> Primitive
-fyN x = fy (show x)
+fyN = fy . show
 
 heightN :: a -> Primitive
-heightN x = height (show x)
+heightN = height . show
 
 interceptN :: a -> Primitive
-interceptN x = intercept (show x)
+interceptN = intercept . show
 
 kN :: a -> Primitive
-kN x = k (show x)
+kN = k . show
 
 lengthAdjustN :: a -> Primitive
-lengthAdjustN x = lengthAdjust (show x)
+lengthAdjustN = lengthAdjust . show
 
 maxN :: a -> Primitive
-maxN x = max (show x)
+maxN = max . show
 
 minN :: a -> Primitive
-minN x = min (show x)
+minN = min . show
 
 originN :: a -> Primitive
-originN x = origin (show x)
+originN = origin . show
 
 pathLengthN :: a -> Primitive
-pathLengthN x = pathLength (show x)
+pathLengthN = pathLength . show
 
 primitiveUnitsN :: a -> Primitive
-primitiveUnitsN x = primitiveUnits (show x)
+primitiveUnitsN = primitiveUnits . show
 
 rN :: a -> Primitive
-rN x = r (show x)
+rN = r . show
 
 radiusN :: a -> Primitive
-radiusN x = radius (show x)
+radiusN = radius . show
 
 refXN :: a -> Primitive
-refXN x = refX (show x)
+refXN = refX . show
 
 refYN :: a -> Primitive
-refYN x = refY (show x)
+refYN = refY . show
 
 rxN :: a -> Primitive
-rxN x = rx (show x)
+rxN = rx . show
 
 ryN :: a -> Primitive
-ryN x = ry (show x)
+ryN = ry . show
 
 scaleN :: a -> Primitive
-scaleN x = scale (show x)
+scaleN = scale . show
 
 startOffsetN :: a -> Primitive
-startOffsetN x = startOffset (show x)
+startOffsetN = startOffset . show
 
 targetXN :: a -> Primitive
-targetXN x = targetX (show x)
+targetXN = targetX . show
 
 targetYN :: a -> Primitive
-targetYN x = targetY (show x)
+targetYN = targetY . show
 
 toN :: a -> Primitive
-toN x = to (show x)
+toN = to . show
 
 u1N :: a -> Primitive
-u1N x = u1 (show x)
+u1N = u1 . show
 
 u2N :: a -> Primitive
-u2N x = u2 (show x)
+u2N = u2 . show
 
 unitsPerEmN :: a -> Primitive
-unitsPerEmN x = unitsPerEm (show x)
+unitsPerEmN = unitsPerEm . show
 
 versionN :: a -> Primitive
-versionN x = version (show x)
+versionN = version . show
 
 widthN :: a -> Primitive
-widthN x = width (show x)
+widthN = width . show
 
 xN :: a -> Primitive
-xN x' = x (show x')
+xN = x . show
 
 x1N :: a -> Primitive
-x1N x = x1 (show x)
+x1N = x1 . show
 
 x2N :: a -> Primitive
-x2N x = x2 (show x)
+x2N = x2 . show
 
 yN :: a -> Primitive
-yN x = y (show x)
+yN = y . show
 
 y1N :: a -> Primitive
-y1N x = y1 (show x)
+y1N = y1 . show
 
 y2N :: a -> Primitive
-y2N x = y2 (show x)
+y2N = y2 . show
 
 zN :: a -> Primitive
-zN x = z (show x)
+zN = z . show
