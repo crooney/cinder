@@ -15,7 +15,7 @@ xmlns = "http://www.w3.org/2000/svg"
 -- convenience methods for simple shapes
 
 cR :: a -> Markup
-cR r = markup ! circle ! rN r
+cR = (markup ! circle ! ) . rN
 
 cXYR :: a -> a -> a -> Markup
 cXYR x y r = cRXY r x y
@@ -72,10 +72,10 @@ dSR :: [Seg] -> Primitive
 dSR = d . showDRelative
 
 pathD :: [Seg] -> Markup
-pathD ss = markup ! path ! dS ss
+pathD = (markup ! path !) . dS
 
 pathDR :: [Seg] -> Markup
-pathDR ss = markup ! path ! dSR ss
+pathDR = (markup ! path !) . dSR
 
 -- transform stuff
 
@@ -97,7 +97,7 @@ transformVals (Scale x)       = show x
 transformVals (Scale2d x y)   = show x ++ "," ++ show y
 
 transformT :: [Transform] -> Primitive
-transformT ts = transform $ intercalate "," $ map go ts
+transformT = transform . intercalate "," . map go
     where go t = transformType t ++ "(" ++ transformVals t ++ ")"
 
 -- animation stuff
@@ -111,11 +111,11 @@ animationADR a d r = markup ! attributeName a ! durN d ! repeatCount (go r)
                            go _         = "indefinite"
 
 aADR :: String -> a -> Double -> Markup
-aADR a d r = markup ! animate !+ animationADR a d r
+aADR = (((markup ! animate !+) .) .) . animationADR
 
 atDRT :: a -> Double -> [Transform] -> Markup
 atDRT d r ts = markup ! animateTransform !+ animationADR "transform" d r
-                ! at "type" (transformType $ head ts) ! vs (map transformVals ts)
+               ! at "type" (transformType $ head ts) ! vs (map transformVals ts)
 
 beIndef :: Markup
 beIndef = markup ! begin "indefinite" ! end "indefinite"
