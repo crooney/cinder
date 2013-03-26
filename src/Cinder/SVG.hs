@@ -145,6 +145,16 @@ start = ffi "%1['beginElement']() || %1"
 stop :: Node -> Fay Node
 stop = ffi "%1['endElement']() || %1"
 
+-- attributes whose names conflict with keywords
+classA :: String -> Primitive
+classA = Attribute "class"
+
+typeA :: String -> Primitive
+typeA = Attribute "type"
+
+inA :: String -> Primitive
+inA = Attribute "in"
+
 -- HACK!!!
 inst :: Automatic a -> String
 inst = ffi "%1['instance'] + ' '"

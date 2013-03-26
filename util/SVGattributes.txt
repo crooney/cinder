@@ -16,7 +16,6 @@ bias
 by
 calcMode
 cap-height
-class_
 clipPathUnits
 contentScriptType
 contentStyleType
@@ -58,9 +57,8 @@ height
 horiz-adv-x
 horiz-origin-x
 horiz-origin-y
-id_
+id
 ideographic
-in_
 in2
 intercept
 k
@@ -170,7 +168,6 @@ textLength
 title
 to
 transform
-type_
 u1
 u2
 underline-position
