@@ -28,8 +28,11 @@ setChild = ffi "(%2['appendChild'](%1) && null) || %2"
 setParent :: Node -> Node -> Fay Node
 setParent = ffi "(%1['appendChild'](%2) && null) || %2"
 
-delete :: Node -> Fay ()
-delete = ffi "%1['parentNode']['removeChild'](%1)"
+deleteSelf :: Node -> Fay ()
+deleteSelf = ffi "%1['parentNode']['removeChild'](%1)"
+
+deleteChild :: Node -> Node -> Fay Node
+deleteChild = ffi "(%1['removeChild'](%2) && null) || %2"
 
 replace :: Node -> Node -> Fay Node
 replace = ffi "%1['parentNode']['replaceChild'](%2,%1) || %2"
