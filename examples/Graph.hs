@@ -7,24 +7,13 @@ import Cinder.SVG
 import Cinder.SVG.Attributes
 import System.Random
 
-orig, side :: Double
-orig= -200
-side = 400
-
-colors :: [String]
-colors = ["lightpink","lightblue","lightsalmon","lightgreen","khaki","cyan"]
-
 setup :: Fay ()
 setup = do
     vs <- replicateM (length colors) (boundedRand (round side))
     let bs = barPaths vs
     let ps = piePaths vs
     let mu = concat $ zipWith3 go ps bs colors
-    grp <- root >>= insert (rc !+ mu)
-    ns <- matching "path"
-    mapM_ (setListener "mouseover" focus) ns
-    mapM_ (setListener "mouseout" unfocus) ns
-    insert bg grp
+    root >>= insert (rc !+ mu !+ bg)
     byId "pBtn" >>= setListener "click" toPie
     byId "bBtn" >>= setListener "click" toBar
   where go p b c = pathD p ! fill c !+ go' "B" p b !<+ go' "P" b p !< Complete
@@ -76,10 +65,16 @@ switch next = do
     zipWithM_ setParent ps ms
     mapM_ start ms
 
-
 toPie,toBar :: Event -> Fay ()
 toPie _ = switch "P"
 toBar _ = switch "B"
+
+orig, side :: Double
+orig= -200
+side = 400
+
+colors :: [String]
+colors = ["lightpink","lightblue","lightsalmon","lightgreen","khaki","cyan"]
 
 str :: Markup
 str = markup ! stroke "white" ! strokeWidth "4"
@@ -88,18 +83,6 @@ frz :: Primitive
 frz = fill "freeze"
 
 data Event
-
-focus :: Event -> Fay ()
-focus e = do
-    tgt e >>= insert (aADR "opacity" 1.5 0 ! classA "transient"
-        ! vsN [0.9, 0.5, 0.9])
-    return ()
-
-unfocus :: Event -> Fay ()
-unfocus _ = matching "transient" >>= mapM_ deleteSelf
-
-tgt :: Event -> Fay Node
-tgt = ffi "%1['target']"
 
 matching :: String -> Fay [Node]
 matching = ffi "document['getElementsByClassName'](%1)"
