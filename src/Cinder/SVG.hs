@@ -120,8 +120,11 @@ atDRT d r ts = markup ! animateTransform !+ animationADR "transform" d r
 beIndef :: Markup
 beIndef = markup ! begin "indefinite" ! end "indefinite"
 
-ft :: a -> a -> Markup
-ft f t = markup ! fromN f ! toN t
+ft :: String -> String -> Markup
+ft f t = markup ! from f ! to t
+
+ftN :: a -> a -> Markup
+ftN f t = markup ! fromN f ! toN t
 
 vs :: [String] -> Primitive
 vs = values . intercalate ";"
@@ -223,6 +226,9 @@ maxN = max . show
 
 minN :: a -> Primitive
 minN = min . show
+
+opacityN :: a -> Primitive
+opacityN = opacity . show
 
 originN :: a -> Primitive
 originN = origin . show
