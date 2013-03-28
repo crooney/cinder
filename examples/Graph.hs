@@ -7,18 +7,16 @@ import Cinder.SVG
 import Cinder.SVG.Attributes
 import System.Random
 
-top, tall, left, wide :: Double
-top = -200
-tall = 400
-left = top
-wide = tall
+orig, side :: Double
+orig= -200
+side = 400
 
 colors :: [String]
 colors = ["lightpink","lightblue","lightsalmon","lightgreen","khaki","cyan"]
 
 setup :: Fay ()
 setup = do
-    vs <- replicateM (length colors) (boundedRand (round tall))
+    vs <- replicateM (length colors) (boundedRand (round side))
     let bs = barPaths vs
     let ps = piePaths vs
     let mu = concat $ zipWith3 go ps bs colors
@@ -27,48 +25,45 @@ setup = do
     mapM_ (setListener "mouseover" focus) ns
     mapM_ (setListener "mouseout" unfocus) ns
     insert bg grp
-    byId "PBtn" >>= setListener "click" toPie
-    byId "BBtn" >>= setListener "click" toBar
-  where go p b c = pathD p ! fill c !+ str
-          !+ go' "B" p b !<+ go' "P" b p !< Complete
+    byId "pBtn" >>= setListener "click" toPie
+    byId "bBtn" >>= setListener "click" toBar
+  where go p b c = pathD p ! fill c !+ go' "B" p b !<+ go' "P" b p !< Complete
         go' c x y = aADR "d" du 1 ! frz ! classA c ! vs [showD x,showD y]
-        bg = markup -- ! viewBox "-250 -250 250 250"
-          !+ pathDR [M left top, V tall, H wide] ! fill "none"
-            !+ str ! opacityN 0
+          !+ beIndef
+        bg = pathDR [M orig orig, V side, H side] ! fill "none" ! opacityN 0
             !+ aADR "opacity" du 1 ! classA "B" ! frz !+ ftN 0 0.6 ! Complete
             !+ aADR "opacity" du 1 ! classA "P" ! frz !+ ftN 0.6 0 ! Complete
-          !<+ pathDR [M (left + wide + 40) (top + 40), L 0 (-20),
-            A 20 20 1 1 0 20 20, Z] ! fill "plum" !+ str ! id "PBtn"
-          !<+ pathDR [M (left + wide + 20) (top + 80), H 10, V 20, H 10, V (-10),
-            H 10, V 10, H 10, V 20, H (-40), Z] ! fill "tan" !+ str ! id "BBtn"
+          !<+ pathDR [M (orig+side+40) (orig+40), L 0 (-20),
+            A 20 20 1 1 0 20 20, Z] ! fill "plum" !+ str ! id "pBtn"
+          !<+ pathDR [M (orig+side+20) (orig+80), H 10, V 20, H 10, V (-10),
+            H 10, V 10, H 10, V 20, H (-40), Z] ! fill "tan" ! id "bBtn"
           ! Complete
-        rc = markup ! Element "g" ! id "recenter"  
-          ! transformT [Translate (negate top * 1.25) (negate left * 1.25)]
+        rc = markup ! Element "g" ! transformT [Translate tr tr] !+ str
+        tr = negate orig * 1.25
         du = 2.5
 
 piePaths :: [Double] -> [[Seg]]
 piePaths xs = zipWith go starts angles
-    where go s a = [M cx cy, L (x s) (y s), L (x s) (y s),
+    where go s a = [M c c, L (x s) (y s), L (x s) (y s),
             A r r 0 0 0 (x (s + a)) (y (s + a)), L (x (s + a)) (y (s + a)), Z]
           t = sum xs
           angles = map (\q -> q / t * pi * 2) xs
           starts = scanl (+) 0 angles
-          x a = (r * sin a) + cx
-          y a = (r * cos a) + cy
-          cx = left + r
-          cy = top + r
-          r = tall / 2
+          x a = (r * sin a) + c
+          y a = (r * cos a) + c
+          c = orig + r
+          r = side / 2
 
 barPaths :: [Double] -> [[Seg]]
 barPaths xs = zipWith go xs [1,3 ..]
     where go x n = [M (s n) gb, L (s n) (t x), L (w + s n) (t x),
                 A r r 0 0 0 (w + s n) (t x), L (w + s n) gb, Z]
           t x = gb - x
-          s x = (x * w) + left
+          s x = (x * w) + orig
           l = fromIntegral $ length xs
-          w = wide / (l * 2 +1)
-          gb = top + tall
-          r = tall / 2
+          w = side / (l * 2 +1)
+          gb = orig + side
+          r = side / 2
 
 switch :: String -> Fay ()
 switch next = matching next >>= mapM_ start
