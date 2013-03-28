@@ -66,7 +66,16 @@ barPaths xs = zipWith go xs [1,3 ..]
           r = side / 2
 
 switch :: String -> Fay ()
-switch next = matching next >>= mapM_ start
+-- this is all that's necessary for FF and I think is correct.
+-- switch next = matching next >>= mapM_ start
+-- full version is to placate Chromium
+switch next = do
+    ms <- matching next
+    ps <- mapM parent ms
+    mapM_ deleteSelf ms
+    zipWithM_ setParent ps ms
+    mapM_ start ms
+
 
 toPie,toBar :: Event -> Fay ()
 toPie _ = switch "P"
