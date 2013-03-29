@@ -108,59 +108,59 @@ colsN :: a -> Primitive
 colsN = Attribute "cols" . show
 
 colspanN :: a -> Primitive
-colspanN = (Attribute "colspan") . show
+colspanN = Attribute "colspan" . show
 
 coordsN :: a -> Primitive
-coordsN = (Attribute "coords") . show
+coordsN = Attribute "coords" . show
 
 datetimeN :: a -> Primitive
-datetimeN = (Attribute "datetime") . show
+datetimeN = Attribute "datetime" . show
 
 heightN :: a -> Primitive
-heightN = (Attribute "height") . show
+heightN = Attribute "height" . show
 
 highN :: a -> Primitive
-highN = (Attribute "high") . show
+highN = Attribute "high" . show
 
 lowN :: a -> Primitive
-lowN = (Attribute "low") . show
+lowN = Attribute "low" . show
 
 maxN :: a -> Primitive
-maxN = (Attribute "max") . show
+maxN = Attribute "max" . show
 
 maxlengthN :: a -> Primitive
-maxlengthN = (Attribute "maxlength") . show
+maxlengthN = Attribute "maxlength" . show
 
 minN :: a -> Primitive
-minN = (Attribute "min") . show
+minN = Attribute "min" . show
 
 optimumN :: a -> Primitive
-optimumN = (Attribute "optimum") . show
+optimumN = Attribute "optimum" . show
 
 rowsN :: a -> Primitive
-rowsN = (Attribute "rows") . show
+rowsN = Attribute "rows" . show
 
 rowspanN :: a -> Primitive
-rowspanN = (Attribute "rowspan") . show
+rowspanN = Attribute "rowspan" . show
 
 sizeN :: a -> Primitive
-sizeN = (Attribute "size") . show
+sizeN = Attribute "size" . show
 
 spanN :: a -> Primitive
-spanN = (Attribute "span") . show
+spanN = Attribute "span" . show
 
 startN :: a -> Primitive
-startN = (Attribute "start") . show
+startN = Attribute "start" . show
 
 stepN :: a -> Primitive
-stepN = (Attribute "step") . show
+stepN = Attribute "step" . show
 
 tabindexN :: a -> Primitive
-tabindexN = (Attribute "tabindex") . show
+tabindexN = Attribute "tabindex" . show
 
 valueN :: a -> Primitive
-valueN = (Attribute "value") . show
+valueN = Attribute "value" . show
 
 widthN :: a -> Primitive
-widthN = (Attribute "width") . show
+widthN = Attribute "width" . show
 
