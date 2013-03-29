@@ -1,9 +1,8 @@
-
 module Cinder.HTML
     (module Cinder.HTML, module Cinder.DOM, module Cinder.DSL)
     where
 
-import Prelude hiding (min, max)
+import Prelude hiding (min, max, div)
 import FFI
 import Cinder.DSL
 import Cinder.DOM
@@ -12,6 +11,39 @@ import Cinder.HTML.Elements
 
 xmlns :: String
 xmlns = "http://www.w3.org/1999/xhtml"
+
+imgS :: String -> Markup
+imgS = (markup !) . src
+
+imgSA :: String -> String -> Markup
+imgSA s a = imgS s ! alt a
+
+eC :: Primitive -> String -> Markup
+eC e c = markup ! e !: c
+
+eCC :: Primitive -> String -> String -> Markup
+eCC e c cl = eC e c ! classA cl
+
+dC :: String -> Markup
+dC = eC div
+
+dCC :: String -> String -> Markup
+dCC = eCC div
+
+pC :: String -> Markup
+pC = eC p
+
+pCC :: String -> String -> Markup
+pCC = eCC p
+
+iC :: String -> Markup
+iC = eC i
+
+bC :: String -> Markup
+bC = eC b
+
+strongC :: String -> Markup
+strongC = eC strong
 
 --non-pure HTML specific stuff
 insert :: Markup -> Node -> Fay Node
