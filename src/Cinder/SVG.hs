@@ -171,139 +171,139 @@ hShow x = inst x ++ concatMap (`slot` x) [1 .. 8]
 -- Simple combinators for conversion to string.  Nothing interesting
 -- follows.
 beginN :: a -> Primitive
-beginN = begin . show
+beginN = Attribute "begin" . show
 
 cxN :: a -> Primitive
-cxN = cx . show
+cxN = Attribute "cx" . show
 
 cyN :: a -> Primitive
-cyN = cy . show
+cyN = Attribute "cy" . show
 
 divisorN :: a -> Primitive
-divisorN = divisor . show
+divisorN = Attribute "divisor" . show
 
 durN :: a -> Primitive
-durN = dur . show
+durN = Attribute "dur" . show
 
 dxN :: a -> Primitive
-dxN = dx . show
+dxN = Attribute "dx" . show
 
 dyN :: a -> Primitive
-dyN = dy . show
+dyN = Attribute "dy" . show
 
 elevationN :: a -> Primitive
-elevationN = elevation . show
+elevationN = Attribute "elevation" . show
 
 endN :: a -> Primitive
-endN = end . show
+endN = Attribute "end" . show
 
 exponentN :: a -> Primitive
-exponentN = exponent . show
+exponentN = Attribute "exponent" . show
 
 fromN :: a -> Primitive
-fromN = from . show
+fromN = Attribute "from" . show
 
 fxN :: a -> Primitive
-fxN = fx . show
+fxN = Attribute "fx" . show
 
 fyN :: a -> Primitive
-fyN = fy . show
+fyN = Attribute "fy" . show
 
 heightN :: a -> Primitive
-heightN = height . show
+heightN = Attribute "height" . show
 
 interceptN :: a -> Primitive
-interceptN = intercept . show
+interceptN = Attribute "intercept" . show
 
 kN :: a -> Primitive
-kN = k . show
+kN = Attribute "k" . show
 
 lengthAdjustN :: a -> Primitive
-lengthAdjustN = lengthAdjust . show
+lengthAdjustN = Attribute "lengthAdjust" . show
 
 maxN :: a -> Primitive
-maxN = max . show
+maxN = Attribute "max" . show
 
 minN :: a -> Primitive
-minN = min . show
+minN = Attribute "min" . show
 
 opacityN :: a -> Primitive
-opacityN = opacity . show
+opacityN = Attribute "opacity" . show
 
 originN :: a -> Primitive
-originN = origin . show
+originN = Attribute "origin" . show
 
 pathLengthN :: a -> Primitive
-pathLengthN = pathLength . show
+pathLengthN = Attribute "pathLength" . show
 
 primitiveUnitsN :: a -> Primitive
-primitiveUnitsN = primitiveUnits . show
+primitiveUnitsN = Attribute "primitiveUnits" . show
 
 rN :: a -> Primitive
-rN = r . show
+rN = Attribute "r" . show
 
 radiusN :: a -> Primitive
-radiusN = radius . show
+radiusN = Attribute "radius" . show
 
 refXN :: a -> Primitive
-refXN = refX . show
+refXN = Attribute "refX" . show
 
 refYN :: a -> Primitive
-refYN = refY . show
+refYN = Attribute "refY" . show
 
 rxN :: a -> Primitive
-rxN = rx . show
+rxN = Attribute "rx" . show
 
 ryN :: a -> Primitive
-ryN = ry . show
+ryN = Attribute "ry" . show
 
 scaleN :: a -> Primitive
-scaleN = scale . show
+scaleN = Attribute "scale" . show
 
 startOffsetN :: a -> Primitive
-startOffsetN = startOffset . show
+startOffsetN = Attribute "startOffset" . show
 
 targetXN :: a -> Primitive
-targetXN = targetX . show
+targetXN = Attribute "targetX" . show
 
 targetYN :: a -> Primitive
-targetYN = targetY . show
+targetYN = Attribute "targetY" . show
 
 toN :: a -> Primitive
-toN = to . show
+toN = Attribute "to" . show
 
 u1N :: a -> Primitive
-u1N = u1 . show
+u1N = Attribute "u1" . show
 
 u2N :: a -> Primitive
-u2N = u2 . show
+u2N = Attribute "u2" . show
 
 unitsPerEmN :: a -> Primitive
-unitsPerEmN = unitsPerEm . show
+unitsPerEmN = Attribute "unitsPerEm" . show
 
 versionN :: a -> Primitive
-versionN = version . show
+versionN = Attribute "version" . show
 
 widthN :: a -> Primitive
-widthN = width . show
+widthN = Attribute "width" . show
 
 xN :: a -> Primitive
-xN = x . show
+xN = Attribute "x" . show
 
 x1N :: a -> Primitive
-x1N = x1 . show
+x1N = Attribute "x1" . show
 
 x2N :: a -> Primitive
-x2N = x2 . show
+x2N = Attribute "x2" . show
 
 yN :: a -> Primitive
-yN = y . show
+yN = Attribute "y" . show
 
 y1N :: a -> Primitive
-y1N = y1 . show
+y1N = Attribute "y1" . show
 
 y2N :: a -> Primitive
-y2N = y2 . show
+y2N = Attribute "y2" . show
 
 zN :: a -> Primitive
-zN = z . show
+zN = Attribute "z" . show
