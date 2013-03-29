@@ -10,7 +10,7 @@ EXAMPLES=$(patsubst %.hs,%.js,$(EX_SRC))
 EX_SVG=$(patsubst %.hs,%.svg,$(EX_SRC))
 EX_HTML=$(patsubst %.hs,%.html,$(EX_SRC))
 
-LANGS=SVG
+LANGS=SVG HTML
 LANGS_GEN=$(patsubst %,src/Cinder/%/Attributes.hs,$(LANGS))
 LANGS_GEN+=$(patsubst %,src/Cinder/%/Elements.hs,$(LANGS))
 
@@ -45,6 +45,9 @@ $(LANGS_GEN):
 langs: $(UTILS) $(LANGS_GEN)
 
 %.svg: %.SVG
+	ln -s $(<F) $@
+
+%.html: %.HTML
 	ln -s $(<F) $@
 
 %.svg: %.hs
