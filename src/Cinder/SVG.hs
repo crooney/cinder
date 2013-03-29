@@ -148,6 +148,20 @@ start = ffi "%1['beginElement']() || %1"
 stop :: Node -> Fay Node
 stop = ffi "%1['endElement']() || %1"
 
+-- values for attributes whose values might be animated
+
+baseVal :: String -> Node -> Fay String
+baseVal = ffi "%2['%1'].baseVal.value"
+
+baseValN :: String -> Node -> Fay Double
+baseValN = ffi "%2['%1'].baseVal.value"
+
+animVal :: String -> Node -> Fay String
+animVal = ffi "%2['%1'].animVal.value"
+
+animValN :: String -> Node -> Fay Double
+animValN = ffi "%2['%1'].animVal.value"
+
 -- attributes whose names conflict with keywords
 classA :: String -> Primitive
 classA = Attribute "class"
