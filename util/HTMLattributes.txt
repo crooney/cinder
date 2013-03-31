@@ -22,9 +22,7 @@ contextmenu
 controls
 coords
 crossorigin
-data
 datetime
-default
 defer
 dir
 dirname
