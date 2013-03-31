@@ -22,7 +22,7 @@ eC :: Primitive -> String -> Markup
 eC e c = markup ! e !: c
 
 eCC :: Primitive -> String -> String -> Markup
-eCC e c cl = eC e c ! classA cl
+eCC e cl c = eC e c ! classA cl
 
 dC :: String -> Markup
 dC = eC div
