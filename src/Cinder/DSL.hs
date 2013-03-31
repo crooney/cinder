@@ -36,52 +36,52 @@ type Markup = [Primitive]
 markup :: Markup
 markup = []
 
-infixl 2 !
+infixl 5 !
 (!) :: Markup -> Primitive -> Markup
 (!) = flip (:)
 
-infixl 2 !:
+infixl 5 !:
 (!:) :: Markup -> DString -> Markup
 m !: v = m ! Content v
 
-infixl 2 !>
+infixl 5 !>
 (!>) :: Markup -> Primitive -> Markup
 (!>) = (!)
 
-infixl 2 !>>
+infixl 5 !>>
 (!>>) :: Markup -> DString -> Markup
 m !>> t = m ! Element t
 
-infixl 2 !<
+infixl 5 !<
 (!<) :: Markup -> Primitive -> Markup
 m !< Complete = closeAll m
 m !< t = (m ! Complete) ! t
 
-infixl 2 !<<
+infixl 5 !<<
 (!<<) :: Markup -> DString -> Markup
 m !<< t = m !< Element t
 
-infixl 2 !+
+infixl 5 !+
 (!+) :: Markup -> Markup -> Markup
 (!+) = flip (++)
 
-infixl 2 !<+
+infixl 5 !<+
 (!<+) :: Markup -> Markup -> Markup
 m !<+ t = (m ! Complete) !+ t
 
 closeAll :: Markup -> Markup
 closeAll m = if n >= 0 then replicate n Complete ++ m
-                       else error "Markup has more close elements then start"
+                       else error "Markup has more close elements than open"
     where n = foldr nestLevel 0 m
 
 at :: DString -> DString -> Primitive
 at = Attribute
 
-atN :: DString -> Double -> Primitive
+atN :: DString -> a -> Primitive
 atN t v = Attribute t (show v)
 
 atP :: DString -> Double -> Primitive
-atP t v = Attribute t (show v ++"%")
+atP t v = Attribute t (show v ++ "%")
 
 co :: DString -> Primitive
 co = Content
