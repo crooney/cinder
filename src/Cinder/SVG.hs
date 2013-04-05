@@ -127,13 +127,25 @@ ftN :: a -> a -> Markup
 ftN f t = markup ! fromN f ! toN t
 
 vs :: [String] -> Primitive
-vs = values . intercalate ";"
+vs = values . isc
 
 vsN :: [a] -> Primitive
 vsN = vs . map show
 
 pc :: a -> String
 pc = (++"%") . show
+
+isc :: [String] -> String
+isc = intercalate ";"
+
+bounce :: Double -> Double -> Double -> Int -> Markup
+bounce f t b nb = markup ! keyTimes kt ! keySplines ks
+                    ! values kv ! calcMode "spline"
+    where kt = isc $ map show $ 0 : (take (nb * 2)
+                 [(1-b),((1-b) + b / fromIntegral (2*nb)) ..] ++ [1])
+          kv = isc $ map show $
+                 (intersperse t $ take (nb+1) (map (t-) $ iterate (*b) (t-f))) ++ [t]
+          ks = isc $ "0 0 1 1" : replicate (nb) "0 .75 .25 1; 1 .75 .25 0"
 
 --non-pure SVG specific stuff (animations and namespaces, mostly)
 insert :: Markup -> Node -> Fay Node
