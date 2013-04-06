@@ -153,14 +153,12 @@ fxSplines x = ksC $ isc $ "0 0 1 1"
                 : replicate x "0 .75 .25 1; 1 .75 .25 0"
 
 bounce :: Double -> Double -> Double -> Int -> Markup
-bounce f t b nb = markup ! fxTimes b nb !+ fxSplines nb
-                    ! vsN kv ! calcMode "spline"
-    where kv = (intersperse t $ take (nb+1)
-                    (map (t-) $ iterate (*b) (t-f))) ++ [t]
+bounce f t b nb = markup ! fxTimes b nb ! vsN kv !+ fxSplines nb
+    where kv = (intersperse t $ take (nb+1) (map (t-) $ iterate (*b) (t-f))) 
+                ++ [t]
 
 settle :: Double -> Double -> Double -> Int -> Markup
-settle f t b nb = markup ! fxTimes b nb !+ fxSplines nb
-                    ! vsN kv ! calcMode "spline"
+settle f t b nb = markup ! fxTimes b nb ! vsN kv !+ fxSplines nb
     where kv = f : (take (nb*2) $ zipWith ($) (cycle [(t+),(t-)])
                                              (iterate (*b) (b*(t-f)))) ++ [t]
 
