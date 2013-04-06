@@ -43,6 +43,9 @@ setAttr = ffi "(%3['setAttributeNS'](null,%1,%2) && null) || %3"
 byId :: String -> Fay Node
 byId = ffi "document['getElementById'](%1)"
 
+byTag :: String -> Node -> Fay [Node]
+byTag = ffi "%2['getElementsByTagName'](%1)"
+
 parent :: Node -> Fay Node
 parent = ffi "%1['parentNode']"
 
