@@ -174,6 +174,12 @@ overShoot f t b = markup ! vsN [f, t + ((t-f)*b), t]
                             ! keyTimes (iscN [0,1 - (b / (1+2 * b)),1])
                             !+ ksC "1 .9 .1 0; 0 .75 .25 1"
 
+speedUp :: Markup
+speedUp = ksC "1 .8 .3 .1"
+
+slowDown :: Markup
+slowDown = ksC "0 .2 .8 1"
+
 --non-pure SVG specific stuff (animations and namespaces, mostly)
 insert :: Markup -> Node -> Fay Node
 insert = insertNS xmlns

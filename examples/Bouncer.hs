@@ -10,7 +10,7 @@ main = addEventListener "load" bouncer False
 
 bouncer :: Fay ()
 bouncer = do
-    root >>= insert b >>= insert s >>= insert rs >>= insert os
+    root >>= insert (b !+ s !+ rs !+ os !+ su !+ sd)
     return ()
     where
         d = 2.0
@@ -23,6 +23,10 @@ bouncer = do
                 !+ runningStart 75 375 0.2 ! fill "freeze" !< Complete
         os = markup !+ cRXY 25 350 100 ! stroke "cyan" !+ aADR "cy" d r
                 !+ overShoot 100 400 0.2 ! fill "freeze" !< Complete
+        su = markup !+ cRXY 25 450 50 ! fill "red" !+ aADR "cy" d r
+                !+ speedUp !+ ftN 100 400 ! fill "freeze" !< Complete
+        sd = markup !+ rHWXY 50 50 525 75 ! fill "cyan" !+ aADR "y" d r
+                !+ slowDown !+ ftN 75 375 ! fill "freeze" !< Complete
 
 addEventListener :: String -> Fay () -> Bool -> Fay ()
 addEventListener = ffi "window['addEventListener'](%1,%2,%3)"
