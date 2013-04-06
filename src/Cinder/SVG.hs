@@ -132,20 +132,47 @@ vs = values . isc
 vsN :: [a] -> Primitive
 vsN = vs . map show
 
+ksC :: String -> Markup
+ksC = (markup ! calcMode "spline" !) . keySplines
+
 pc :: a -> String
 pc = (++"%") . show
 
 isc :: [String] -> String
 isc = intercalate ";"
 
-bounce :: Double -> Double -> Double -> Int -> Markup
-bounce f t b nb = markup ! keyTimes kt ! keySplines ks
-                    ! values kv ! calcMode "spline"
-    where kt = isc $ map show $ 0 : (take (nb * 2)
+iscN :: [a] -> String
+iscN = isc . map show
+
+fxTimes :: Double -> Int -> Primitive
+fxTimes b nb = keyTimes $ iscN $ 0 : (take (nb * 2)
                  [(1-b),((1-b) + b / fromIntegral (2*nb)) ..] ++ [1])
-          kv = isc $ map show $
-                 (intersperse t $ take (nb+1) (map (t-) $ iterate (*b) (t-f))) ++ [t]
-          ks = isc $ "0 0 1 1" : replicate (nb) "0 .75 .25 1; 1 .75 .25 0"
+
+fxSplines :: Int -> Markup
+fxSplines x = ksC $ isc $ "0 0 1 1"
+                : replicate x "0 .75 .25 1; 1 .75 .25 0"
+
+bounce :: Double -> Double -> Double -> Int -> Markup
+bounce f t b nb = markup ! fxTimes b nb !+ fxSplines nb
+                    ! vsN kv ! calcMode "spline"
+    where kv = (intersperse t $ take (nb+1)
+                    (map (t-) $ iterate (*b) (t-f))) ++ [t]
+
+settle :: Double -> Double -> Double -> Int -> Markup
+settle f t b nb = markup ! fxTimes b nb !+ fxSplines nb
+                    ! vsN kv ! calcMode "spline"
+    where kv = f : (take (nb*2) $ zipWith ($) (cycle [(t+),(t-)])
+                                             (iterate (*b) (b*(t-f)))) ++ [t]
+
+runningStart :: Double -> Double -> Double -> Markup
+runningStart f t b = markup ! vsN [f,f - ((t-f)*b) ,t]
+                            ! keyTimes (iscN [0,b / (1+2 * b),1])
+                            !+ ksC "0 .75 .25 1; 1 .9 .1 0"
+
+overShoot :: Double -> Double -> Double -> Markup
+overShoot f t b = markup ! vsN [f, t + ((t-f)*b), t]
+                            ! keyTimes (iscN [0,1 - (b / (1+2 * b)),1])
+                            !+ ksC "1 .9 .1 0; 0 .75 .25 1"
 
 --non-pure SVG specific stuff (animations and namespaces, mostly)
 insert :: Markup -> Node -> Fay Node
