@@ -4,6 +4,7 @@ module Cinder.SVG
 
 import Prelude hiding (min, max)
 import FFI
+import Control.Fay
 import Cinder.DSL
 import Cinder.DOM
 import Cinder.SVG.Attributes hiding (path)
@@ -144,6 +145,11 @@ isc = intercalate ";"
 iscN :: [a] -> String
 iscN = isc . map show
 
+ngon :: Double -> Double -> Double -> Double -> [Seg]
+ngon n x y r = go M 0 : map (go L) [1 .. n - 1] ++ [Z]
+    where go f i = f (x + r * cos (c * i)) (y + r * sin (c * i))
+          c = 2.0 * pi / n
+
 fxTimes :: Double -> Int -> Primitive
 fxTimes b nb = keyTimes $ iscN $ 0 : (take (nb * 2)
                  [(1-b),((1-b) + b / fromIntegral (2*nb)) ..] ++ [1])
@@ -190,6 +196,13 @@ start = ffi "%1['beginElement']() || %1"
 
 stop :: Node -> Fay Node
 stop = ffi "%1['endElement']() || %1"
+
+zipInsert :: [Markup] -> [Node] -> Fay [Node]
+zipInsert = zipWithM insert
+
+stagger :: String -> Double -> Double -> [Node] -> Fay [Node]
+stagger a s i = zipInsert $ map go [s, s + i ..]
+        where go x = markup ! Attribute a (show x)
 
 -- values for attributes whose values might be animated
 
