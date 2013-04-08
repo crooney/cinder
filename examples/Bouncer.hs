@@ -15,8 +15,8 @@ bouncer = do
         circ = foldl1 (!+) $ map go colors
         go x = cRXY 25 50 100 ! fill x !+ aADR "cy" 2.0 1 ! fill "freeze"
                     ! begin "indefinite" !< Complete
-        fx = [bounce 100 400 0.4 3, settle 100 400 0.35 3,
-              bounce 100 400 0.75 4, settle 100 400 0.65 4]
+        fx = [bounce 0.4 3 100 400, settle 0.35 3 100 400,
+              bounce 0.75 4 100 400, settle 0.65 4 100 400]
         colors = ["lightpink", "lightblue", "lightsalmon", "lightgreen"]
 
 main :: Fay ()

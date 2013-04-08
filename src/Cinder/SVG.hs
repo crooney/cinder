@@ -150,31 +150,30 @@ ngon n x y r = go M 0 : map (go L) [1 .. n - 1] ++ [Z]
     where go f i = f (x + r * cos (c * i)) (y + r * sin (c * i))
           c = 2.0 * pi / n
 
-fxTimes :: Double -> Int -> Primitive
-fxTimes b nb = keyTimes $ iscN $ 0 : (take (nb * 2)
+bounceFX :: (Double -> Int -> Double -> Double -> [Double]) ->
+    Double -> Int -> Double -> Double -> Markup
+bounceFX kv b nb f t = markup ! ts b nb !+ ss nb ! vsN (kv b nb f t ++ [t])
+    where ts b nb = keyTimes $ iscN $ 0 : (take (nb * 2)
                  [(1-b),((1-b) + b / fromIntegral (2*nb)) ..] ++ [1])
+          ss x = ksC $ isc $ "0 0 1 1" : replicate x "0 .75 .25 1; 1 .75 .25 0"
 
-fxSplines :: Int -> Markup
-fxSplines x = ksC $ isc $ "0 0 1 1"
-                : replicate x "0 .75 .25 1; 1 .75 .25 0"
+bounce :: Double -> Int -> Double -> Double -> Markup
+bounce b nb f t = bounceFX kv b nb f t
+    where kv b nb f t = intersperse t $ take (nb+1) (map (t-)
+                            $ iterate (*b) (t-f))
 
-bounce :: Double -> Double -> Double -> Int -> Markup
-bounce f t b nb = markup ! fxTimes b nb ! vsN kv !+ fxSplines nb
-    where kv = (intersperse t $ take (nb+1) (map (t-) $ iterate (*b) (t-f))) 
-                ++ [t]
-
-settle :: Double -> Double -> Double -> Int -> Markup
-settle f t b nb = markup ! fxTimes b nb ! vsN kv !+ fxSplines nb
-    where kv = f : (take (nb*2) $ zipWith ($) (cycle [(t+),(t-)])
-                                             (iterate (*b) (b*(t-f)))) ++ [t]
+settle :: Double -> Int -> Double -> Double -> Markup
+settle b nb f t = bounceFX kv b nb f t
+    where kv b nb f t = f : take (nb*2) (zipWith ($) (cycle [(t+),(t-)])
+                                             (iterate (*b) (b*(t-f))))
 
 runningStart :: Double -> Double -> Double -> Markup
-runningStart f t b = markup ! vsN [f,f - ((t-f)*b) ,t]
+runningStart b f t = markup ! vsN [f,f - ((t-f)*b) ,t]
                             ! keyTimes (iscN [0,b / (1+2 * b),1])
                             !+ ksC "0 .75 .25 1; 1 .9 .1 0"
 
 overShoot :: Double -> Double -> Double -> Markup
-overShoot f t b = markup ! vsN [f, t + ((t-f)*b), t]
+overShoot b f t = markup ! vsN [f, t + ((t-f)*b), t]
                             ! keyTimes (iscN [0,1 - (b / (1+2 * b)),1])
                             !+ ksC "1 .9 .1 0; 0 .75 .25 1"
 
