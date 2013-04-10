@@ -2,6 +2,7 @@ module Bouncer (main) where
 
 import Prelude
 import FFI
+import Control.Fay
 import Cinder.SVG
 import Cinder.SVG.Attributes
 
@@ -19,8 +20,23 @@ bouncer = do
               bounce 0.75 4 100 400, settle 0.65 4 100 400]
         colors = ["lightpink", "lightblue", "lightsalmon", "lightgreen"]
 
+grower :: Fay ()
+grower = do
+            root >>= byTag "animate" >>= mapM_ deleteSelf
+            root >>= byTag "circle" >>= zipInsert an
+            root >>= byTag "animate" >>= stagger "begin" 9 0.75
+            return ()
+    where
+        an = zipWith (!+) (repeat (aADR "r" 0.75 1 ! fill "freeze"))
+                            [bounce 0.5 5 25 50, settle 0.45 5 25 50,
+                             bounce 0.85 4 25 50, settle 0.75 4 25 50]
+
 main :: Fay ()
 main = addEventListener "load" bouncer False
+        >> startLater grower 8500
+
+startLater :: Fay () -> Double -> Fay ()
+startLater = ffi "setTimeout(%1,%2)"
 
 addEventListener :: String -> Fay () -> Bool -> Fay ()
 addEventListener = ffi "window['addEventListener'](%1,%2,%3)"
