@@ -183,7 +183,13 @@ speedUp = ksC "1 .8 .3 .1"
 slowDown :: Markup
 slowDown = ksC "0 .2 .8 1"
 
+trace :: Double -> Double -> Double -> Markup
+trace d r l = markup ! strokeDashoffset (show l)
+              ! strokeDasharray (show l ++ "," ++ show l)
+              !+ aADR "stroke-dashoffset" d r ! fill "freeze" !+ ftN l 0
+
 --non-pure SVG specific stuff (animations and namespaces, mostly)
+
 insert :: Markup -> Node -> Fay Node
 insert = insertNS xmlns
 
@@ -202,6 +208,14 @@ zipInsert = zipWithM insert
 stagger :: String -> Double -> Double -> [Node] -> Fay [Node]
 stagger a s i = zipInsert $ map go [s, s + i ..]
         where go x = markup ! Attribute a (show x)
+
+totalLength :: Node -> Fay Double
+totalLength = ffi "%1['getTotalLength']()"
+
+tracePath :: Double -> Double -> Node -> Fay Node
+tracePath d r n = do l <- totalLength n
+                     insert (trace d r l) n
+                     lastChild n
 
 -- values for attributes whose values might be animated
 
