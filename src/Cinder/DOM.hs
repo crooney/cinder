@@ -49,6 +49,12 @@ byTag = ffi "%2['getElementsByTagName'](%1)"
 parent :: Node -> Fay Node
 parent = ffi "%1['parentNode']"
 
+firstChild :: Node -> Fay Node
+firstChild = ffi "%1['firstChild']"
+
+lastChild :: Node -> Fay Node
+lastChild = ffi "%1['lastChild']"
+
 attrNum :: String -> Node -> Fay Double
 attrNum = ffi "%2['getAttributeNS'](null,%1)"
 
