@@ -32,7 +32,7 @@ deleteSelf :: Node -> Fay ()
 deleteSelf = ffi "%1['parentNode']['removeChild'](%1)"
 
 deleteChild :: Node -> Node -> Fay Node
-deleteChild = ffi "(%1['removeChild'](%2) && null) || %2"
+deleteChild = ffi "(%1['removeChild'](%2) && null) || %1"
 
 replace :: Node -> Node -> Fay Node
 replace = ffi "%1['parentNode']['replaceChild'](%2,%1) || %2"
