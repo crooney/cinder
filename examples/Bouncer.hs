@@ -29,7 +29,7 @@ grower = do
     where
         an = zipWith (!+) (repeat (aADR "r" 0.75 1 ! fill "freeze"))
                             [bounce 0.5 5 25 50, settle 0.45 5 25 50,
-                             bounce 0.85 4 25 50, settle 0.75 4 25 50]
+                             bounce 0.85 6 25 50, settle 0.75 6 25 50]
 
 main :: Fay ()
 main = addEventListener "load" bouncer False
