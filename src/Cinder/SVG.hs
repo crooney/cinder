@@ -220,16 +220,16 @@ tracePath d r n = do l <- totalLength n
 -- values for attributes whose values might be animated
 
 baseVal :: String -> Node -> Fay String
-baseVal = ffi "%2['%1'].baseVal.value"
+baseVal = ffi "%2['%1']['baseVal']"
 
 baseValN :: String -> Node -> Fay Double
-baseValN = ffi "%2['%1'].baseVal.value"
+baseValN = ffi "%2['%1']['baseVal']"
 
 animVal :: String -> Node -> Fay String
-animVal = ffi "%2['%1'].animVal.value"
+animVal = ffi "%2['%1']['animVal']"
 
 animValN :: String -> Node -> Fay Double
-animValN = ffi "%2['%1'].animVal.value"
+animValN = ffi "%2['%1']['animVal']"
 
 -- attributes whose names conflict with keywords
 classA :: String -> Primitive
