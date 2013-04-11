@@ -13,7 +13,7 @@ xmlns :: String
 xmlns = "http://www.w3.org/1999/xhtml"
 
 imgS :: String -> Markup
-imgS = (markup !) . src
+imgS = (markup ! img !) . src
 
 imgSA :: String -> String -> Markup
 imgSA s a = imgS s ! alt a
