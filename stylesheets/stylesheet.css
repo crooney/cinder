@@ -280,17 +280,17 @@ Full-Width Styles
 .leftcol {
   float: left;
   background: #f2f2f2;
-  width: 50%;
 }
 
 .rightcol {
   width: 50%;
   height: 550px;
   background: #212121;
+  display: none;
 }
 
 #nav {
-    width: 50%;
+    width: 75%;
     float: left;
     margin: 0 0 3em 0;
     margin-bottom: 0;
@@ -304,7 +304,7 @@ Full-Width Styles
     padding: 0;
 }
 #nav li a {
-  padding: 0px 15px;
+  padding: 0px 5px;
 }
 #nav li a:hover {
   background-color: #444;

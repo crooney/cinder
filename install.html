@@ -39,7 +39,11 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
         <section id="main_content" class="inner">
-            $body$
+            <h2 id="install">Install</h2>
+            <p>The build relies on symlinks and sed, which should be available on any unix box. For Windows users the 0.3 Attributes.hs and Elements.hs are linked below. They should be put into src/Cinder/HTML and src/Cinder/SVG, as names suggest.</p>
+            <p><a href="https://gist.github.com/crooney/5369808">HTML</a></p>
+            <p><a href="https://gist.github.com/crooney/5369841">SVG</a></p>
+            <p>Once those are built, it's a source library simply add <code>--include /path/to/cinder/src</code> to your Fey command line and everything should be jake.</p>
         </section>
     </div>
 
