@@ -277,6 +277,39 @@ Full-Width Styles
   margin: 0 auto;
 }
 
+.leftcol {
+  float: left;
+  background: #f2f2f2;
+  width: 50%;
+}
+
+.rightcol {
+  width: 50%;
+  height: 550px;
+  background: #212121;
+}
+
+#nav {
+    width: 50%;
+    float: left;
+    margin: 0 0 3em 0;
+    margin-bottom: 0;
+    padding: 0;
+    list-style: none;
+    background-color: #212121;
+}
+#nav li {
+    float: left;
+    list-style: none;
+    padding: 0;
+}
+#nav li a {
+  padding: 0px 15px;
+}
+#nav li a:hover {
+  background-color: #444;
+}
+
 #forkme_banner {
   display: block;
   position: absolute;
@@ -371,6 +404,7 @@ Full-Width Styles
 }
 
 #footer_wrap {
+  clear: left;
   background: #212121;
 }
 
