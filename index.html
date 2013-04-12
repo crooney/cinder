@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Cinder : Markup (HTML and SVG) and DOM manipulation DSL for the Fay subset of Haskell." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Cinder</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/crooney/cinder">View on GitHub</a>
+
+          <h1 id="project_title">Cinder</h1>
+          <h2 id="project_tagline">Markup (HTML and SVG) and DOM manipulation DSL for the Fay subset of Haskell.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/crooney/cinder/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/crooney/cinder/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>Cinder</h2>
+
+<p>Cinder is a markup and DOM manipulation DSL for the excellent <a href="http://fay-lang.org">Fay</a> subset of Haskell.</p>
+
+<p>It may be simpler to look at the <a href="http://crooney.github.io/cinder">examples</a> to get a feel for the lib.</p>
+
+<h3>DSL</h3>
+
+<p>Cinder has combinators defined for all elements and attributes of its modeled markups (currently HTML and SVG), as well as inline combinators for them. For example, the body of a simple web page could be specified like this:</p>
+
+<div class="highlight"><pre><span class="nf">myBody</span> <span class="ow">=</span> <span class="n">markup</span> <span class="o">!</span> <span class="n">body</span> <span class="o">!</span> <span class="n">bgcolor</span> <span class="s">"lightblue"</span>
+                    <span class="o">!&gt;</span> <span class="n">h1</span> <span class="o">!:</span> <span class="s">"Cheers"</span>
+                    <span class="o">!&lt;</span> <span class="n">p</span> <span class="o">!:</span> <span class="s">"Visit Margarita!"</span>
+                        <span class="o">!+&gt;</span> <span class="n">imgSA</span> <span class="s">"i.png"</span> <span class="s">"La Isla"</span> <span class="o">!</span> <span class="kt">Complete</span>
+                <span class="o">!&lt;</span> <span class="kt">Complete</span>
+</pre></div>
+
+<p>A single <code>!</code> (or <code>!&gt;</code>) signals that the following element or attribute is a child of the current element. <code>!:</code> signifies that content follows. <code>!</code> followed by the constructor <code>Complete</code> closes the current element and causes following markup to belong to the immediate parent. <code>!&lt;</code> is equivalent to <code>! Complete !</code>, that is, it closes the current element and takes starts right in on a sibling. As a special case <code>!&lt; Complete</code> closes all pending elements. So, in the example,the <code>h1</code> is closed by the <code>!&lt;</code> before <code>p</code>, the <code>img</code> closed explicitly and the <code>p</code> and <code>body</code> are closed by the <code>!&lt; Complete</code>. The <code>! Complete</code> after the <code>img</code> tag is superfluous, but harmless.</p>
+
+<p>Further, complete sections of markup may be added by <code>!+</code> (or <code>!+&lt;</code> or <code>!+&gt;</code>). Convenience functions are available to add complete tags with commonly used attributes in this manner.  For instance <code>imgSA "i.png" "La Isla"</code> is exactly equivalent to <code>markup ! img ! src "i.png" ! alt "La Isla"</code>.</p>
+
+<p>Attribute constructors which may reasonably expect numeric arguments may be postfixed by N as a convenience: <code>heightN 100</code> as opposed to <code>height (show 100)</code>.</p>
+
+<h3>DOM</h3>
+
+<p>DOM manipulation happens mostly through <code>insert</code> which takes markup and a DOM node and does the obvious. Various functionality is built on top of it, for zipping lists of markup into lists of nodes, etc. In addition, various DOM manipulations not directly related to the DSL are supported.</p>
+
+<p>The following, from one of the examples, deletes all animations, inserts a special effect animation into each circle tag and staggers the animations to start 3/4s of a second apart.</p>
+
+<div class="highlight"><pre><span class="nf">grower</span> <span class="ow">=</span> <span class="kr">do</span> <span class="n">root</span> <span class="o">&gt;&gt;=</span> <span class="n">byTag</span> <span class="s">"animate"</span> <span class="o">&gt;&gt;=</span> <span class="n">mapM_</span> <span class="n">deleteSelf</span>
+            <span class="n">root</span> <span class="o">&gt;&gt;=</span> <span class="n">byTag</span> <span class="s">"circle"</span> <span class="o">&gt;&gt;=</span> <span class="n">zipInsert</span> <span class="n">an</span>
+            <span class="n">root</span> <span class="o">&gt;&gt;=</span> <span class="n">byTag</span> <span class="s">"animate"</span> <span class="o">&gt;&gt;=</span> <span class="n">stagger</span> <span class="s">"begin"</span> <span class="mi">9</span> <span class="mf">0.75</span>
+            <span class="n">return</span> <span class="nb">()</span>
+    <span class="kr">where</span> <span class="n">an</span> <span class="ow">=</span> <span class="n">zipWith</span> <span class="p">(</span><span class="o">!+</span><span class="p">)</span> <span class="p">(</span><span class="n">repeat</span> <span class="p">(</span><span class="n">aADR</span> <span class="s">"r"</span> <span class="mf">0.75</span> <span class="mi">1</span> <span class="o">!</span> <span class="n">fill</span> <span class="s">"freeze"</span><span class="p">))</span>
+                            <span class="p">[</span><span class="n">bounce</span> <span class="mf">0.5</span> <span class="mi">5</span> <span class="mi">25</span> <span class="mi">50</span><span class="p">,</span> <span class="n">settle</span> <span class="mf">0.45</span> <span class="mi">5</span> <span class="mi">25</span> <span class="mi">50</span><span class="p">,</span>
+                             <span class="n">bounce</span> <span class="mf">0.85</span> <span class="mi">6</span> <span class="mi">25</span> <span class="mi">50</span><span class="p">,</span> <span class="n">settle</span> <span class="mf">0.75</span> <span class="mi">6</span> <span class="mi">25</span> <span class="mi">50</span><span class="p">]</span>
+</pre></div>
+
+<p>The convenience <code>aADR "r" 0.75 1</code> is equal to <code>markup ! animate ! attributeName "r" ! durN 0.75 ! repeatCountN 1</code>.</p>
+
+<h3>SVG</h3>
+
+<p>Cinder started out as an SVG library, before it was realized that it could be generally useful.  All the examples but one are in SVG and almost no convenience funcs beyond constructors that accept numbers have been yet written for HTML.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Cinder maintained by <a href="https://github.com/crooney">crooney</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
