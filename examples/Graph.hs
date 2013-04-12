@@ -22,9 +22,9 @@ setup = do
         bg = pathDR [M orig orig, V side, H side] ! fill "none" ! opacityN 0
             !+ aADR "opacity" du 1 ! classA "B" ! frz !+ ftN 0 0.6 ! Complete
             !+ aADR "opacity" du 1 ! classA "P" ! frz !+ ftN 0.6 0 ! Complete
-          !<+ pathDR [M (orig+side+40) (orig+40), L 0 (-20),
+          !<+ pathDR [M (orig+side+20) (orig+40), L 0 (-20),
             A 20 20 1 1 0 20 20, Z] ! fill "plum" !+ str ! id "pBtn"
-          !<+ pathDR [M (orig+side+20) (orig+80), H 10, V 20, H 10, V (-10),
+          !<+ pathDR [M (orig+side+0) (orig+80), H 10, V 20, H 10, V (-10),
             H 10, V 10, H 10, V 20, H (-40), Z] ! fill "tan" ! id "bBtn"
           ! Complete
         rc = markup ! Element "g" ! transformT [Translate tr tr] !+ str
