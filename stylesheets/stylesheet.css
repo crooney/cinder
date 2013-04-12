@@ -289,26 +289,16 @@ Full-Width Styles
   display: none;
 }
 
-#nav {
-    width: 75%;
-    float: left;
-    margin: 0 0 3em 0;
-    margin-bottom: 0;
-    padding: 0;
-    list-style: none;
-    background-color: #212121;
-}
-#nav li {
-    float: left;
-    list-style: none;
-    padding: 0;
-}
-#nav li a {
-  padding: 0px 5px;
-}
-#nav li a:hover {
-  background-color: #444;
-}
+/*taken from http://www.basewebmaster.com/css/simple-css-drop-down-menu.php */
+ul.drop a { display:block; }
+ul.drop, ul.drop li, ul.drop ul { list-style: none; margin: 0; padding: 0; color: #fff;}
+ul.drop { position: relative; z-index: 597; float: left; }
+ul.drop li { float: left; line-height: 1.3em; vertical-align: left; zoom: 1; padding: 5px 10px 5px 0px; }
+ul.drop li.hover, ul.drop li:hover { position: relative; z-index: 599; cursor: default; }
+ul.drop ul { visibility: hidden; position: absolute; top: 100%; left: 0; z-index: 598; background: #212121; border: 1px solid #444; }
+ul.drop ul li { float: none; }
+ul.drop ul ul { top: -2px; left: 100%; }
+ul.drop li:hover > ul { visibility: visible }
 
 #forkme_banner {
   display: block;
