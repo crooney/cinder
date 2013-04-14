@@ -44,10 +44,23 @@
     <div id="main_content_wrap" class="outer">
         <section id="main_content" class="inner">
             <h3 id="morph-example">Morph Example</h3>
-            <p>TBD: Explain some shit here.</p>
+            <p>Explained below.</p>
             <embed height="500" width="500" id="EXAMPLE" name="EXAMPLE" src="examples/Morpher.svg"/>
             
-            
+            <p>This is the complete code for this example:</p>
+            <pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">morpher ::</span> <span class="dt">Fay</span> ()
+            morpher <span class="fu">=</span> <span class="kw">do</span>
+                root <span class="fu">&gt;&gt;=</span> insert mu
+                <span class="fu">return</span> ()
+                <span class="kw">where</span>
+                    mu <span class="fu">=</span> markup <span class="fu">!+</span> pathD dFrom <span class="fu">!</span> fill <span class="st">&quot;cyan&quot;</span> <span class="fu">!+</span> aADR <span class="st">&quot;d&quot;</span> <span class="fl">5.5</span> <span class="dv">9</span>
+                        <span class="fu">!</span> vs [showD dFrom,showD dTo,showD dFrom] <span class="fu">!&lt;</span> <span class="dt">Complete</span>
+                    dFrom <span class="fu">=</span> [<span class="dt">M</span> <span class="dv">200</span> <span class="dv">200</span>, <span class="dt">Q</span> <span class="dv">510</span> <span class="dv">10</span> <span class="dv">320</span> <span class="dv">200</span>, <span class="dt">Q</span> <span class="dv">510</span> <span class="dv">510</span> <span class="dv">320</span> <span class="dv">320</span>,
+                            <span class="dt">Q</span> <span class="dv">10</span> <span class="dv">510</span> <span class="dv">200</span> <span class="dv">320</span>, <span class="dt">Q</span> <span class="dv">10</span> <span class="dv">10</span> <span class="dv">200</span> <span class="dv">200</span>]
+                    dTo <span class="fu">=</span> [<span class="dt">M</span> <span class="dv">10</span> <span class="dv">10</span>, <span class="dt">Q</span> <span class="dv">125</span> <span class="dv">75</span> <span class="dv">190</span> <span class="dv">10</span>, <span class="dt">Q</span> <span class="dv">125</span> <span class="dv">125</span> <span class="dv">190</span> <span class="dv">190</span>,
+                            <span class="dt">Q</span> <span class="dv">75</span> <span class="dv">125</span> <span class="dv">10</span> <span class="dv">190</span>, <span class="dt">Q</span> <span class="dv">75</span> <span class="dv">75</span> <span class="dv">10</span> <span class="dv">10</span>]</code></pre>
+            <p>This simple example doesn't really have to be scripted, as it has no dynamic portion that couldn't have been written in pure SVG. The markup is quite simple. <code>pathD</code> creates a path element and populate its <code>d</code> attribute with a list of <code>Segment</code>s. Using a list of <code>Segment</code> provides type safety and computability that the raw <code>d</code> attribute, a string, lacks.</p>
+            <p><code>aADR</code> creates an animation for the attribute <code>d</code> of 5.5 seconds that repeats 9 times (ADR = attributeName, dur, repeatCount). <code>vs</code> makes a values attribute out of a list. Finally, the <code>!&lt; Complete</code> closes all open Elements, in this case <code>path</code> and <code>animate</code>.</p>
         </section>
     </div>
 
