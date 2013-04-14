@@ -36,6 +36,7 @@ type Markup = [Primitive]
 markup :: Markup
 markup = []
 
+-- Recommend using this for Attributes and Content and (!>) for Elements
 infixl 5 !
 (!) :: Markup -> Primitive -> Markup
 (!) = flip (:)
@@ -44,6 +45,8 @@ infixl 5 !:
 (!:) :: Markup -> DString -> Markup
 m !: v = m ! Content v
 
+-- superfluous but maintains visual correspondence with (!<) when called
+-- with Element.
 infixl 5 !>
 (!>) :: Markup -> Primitive -> Markup
 (!>) = (!)
@@ -57,6 +60,7 @@ infixl 5 !<
 m !< Complete = closeAll m
 m !< t = (m ! Complete) ! t
 
+-- allow inserting arbitrary element using just it's name
 infixl 5 !<<
 (!<<) :: Markup -> DString -> Markup
 m !<< t = m !< Element t
@@ -74,6 +78,8 @@ closeAll m = if n >= 0 then replicate n Complete ++ m
                        else error "Markup has more close elements than open"
     where n = foldr nestLevel 0 m
 
+-- short constructors
+
 at :: DString -> DString -> Primitive
 at = Attribute
 
@@ -89,6 +95,8 @@ co = Content
 el :: DString -> Primitive
 el = Element
 
+-- simple pretty printer for debugging. convenient to use with putStrLn and
+-- read in firebug or what gave you.
 pretty :: Markup -> String
 pretty m = concat $ zipWith cat ins rm
     where rm = reverse m
@@ -99,6 +107,7 @@ pretty m = concat $ zipWith cat ins rm
           go (Content   x)   = "\"" ++ x ++ "\""
           go (Complete)      = "<--"
 
+-- determine depth of markup tree.
 nestLevel :: Primitive -> Int -> Int
 nestLevel (Element _) x = x + 1
 nestLevel (Complete)  x = x - 1

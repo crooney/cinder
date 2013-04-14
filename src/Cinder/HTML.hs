@@ -12,40 +12,45 @@ import Cinder.HTML.Elements
 xmlns :: String
 xmlns = "http://www.w3.org/1999/xhtml"
 
+-- Various convenience funcs
+
 imgS :: String -> Markup
 imgS = (markup ! img !) . src
 
 imgSA :: String -> String -> Markup
 imgSA s a = imgS s ! alt a
 
-eC :: Primitive -> String -> Markup
-eC e c = markup ! e !: c
+-- e = Element, C = class, X = Content, I = id
 
-eCC :: Primitive -> String -> String -> Markup
-eCC e cl c = eC e c ! classA cl
+eX :: Primitive -> String -> Markup
+eX e c = markup ! e !: c
 
-dC :: String -> Markup
-dC = eC div
+eCX :: Primitive -> String -> String -> Markup
+eCX e cl c = eC e c ! classA cl
 
-dCC :: String -> String -> Markup
-dCC = eCC div
+dX :: String -> Markup
+dX = eX div
 
-pC :: String -> Markup
-pC = eC p
+dCX :: String -> String -> Markup
+dCX = eCX div
 
-pCC :: String -> String -> Markup
-pCC = eCC p
+pX :: String -> Markup
+pX = eX p
 
-iC :: String -> Markup
-iC = eC i
+pCX :: String -> String -> Markup
+pCX = eCX p
 
-bC :: String -> Markup
-bC = eC b
+iX :: String -> Markup
+iX = eX i
 
-strongC :: String -> Markup
-strongC = eC strong
+bX :: String -> Markup
+bX = eX b
 
---non-pure HTML specific stuff
+strongX :: String -> Markup
+strongX = eX strong
+
+-- non-pure HTML specific stuff
+
 insert :: Markup -> Node -> Fay Node
 insert = insertNS xmlns
 
@@ -53,6 +58,7 @@ node :: DString -> Fay Node
 node = nodeNS xmlns
 
 -- attributes whose names conflict with keywords
+
 classA :: String -> Primitive
 classA = Attribute "class"
 
@@ -66,6 +72,8 @@ defaultA :: String -> Primitive
 defaultA = Attribute "default"
 
 -- Boolean Attributes
+-- in the w3c sense of boolean -- not true or false, rather present or not
+
 asyncB :: Primitive
 asyncB = Attribute "async" ""
 
@@ -136,6 +144,7 @@ typemustmatchB :: Primitive
 typemustmatchB = Attribute "typemustmatch" ""
 
 -- (possibly) numeric attributes
+
 colsN :: a -> Primitive
 colsN = Attribute "cols" . show
 

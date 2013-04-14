@@ -103,9 +103,11 @@ transformT = transform . intercalate "," . map go
 
 -- animation stuff
 
+-- A = attributeName, T = to, B = begin
 setATB :: String -> String -> a -> Markup
 setATB a t b = markup ! set ! attributeName a ! to t ! beginN b
 
+-- D = dur, R = repeatCount
 animationADR :: String -> a -> Double -> Markup
 animationADR a d r = markup ! attributeName a ! durN d ! repeatCount (go r)
                      where go x | x > 0 = show x
@@ -121,12 +123,14 @@ atDRT d r ts = markup ! animateTransform !+ animationADR "transform" d r
 beIndef :: Markup
 beIndef = markup ! begin "indefinite" ! end "indefinite"
 
+-- f = from, t = to
 ft :: String -> String -> Markup
 ft f t = markup ! from f ! to t
 
 ftN :: a -> a -> Markup
 ftN f t = markup ! fromN f ! toN t
 
+-- turn list into SVG style values list
 vs :: [String] -> Primitive
 vs = values . isc
 
@@ -139,17 +143,21 @@ ksC = (markup ! calcMode "spline" !) . keySplines
 pc :: a -> String
 pc = (++"%") . show
 
+-- slip in semicolon
 isc :: [String] -> String
 isc = intercalate ";"
 
 iscN :: [a] -> String
 iscN = isc . map show
 
+-- draw equilateral polygons n = number of sides, r = distance from center
+-- to vertex
 ngon :: Double -> Double -> Double -> Double -> [Seg]
 ngon n x y r = go M 0 : map (go L) [1 .. n - 1] ++ [Z]
     where go f i = f (x + r * cos (c * i)) (y + r * sin (c * i))
           c = 2.0 * pi / n
 
+-- helper func for bounce and settle, which see
 bounceFX :: (Double -> Int -> Double -> Double -> [Double]) ->
     Double -> Int -> Double -> Double -> Markup
 bounceFX kv b nb f t = markup ! ts b nb !+ ss nb ! vsN (kv b nb f t ++ [t])
@@ -157,21 +165,26 @@ bounceFX kv b nb f t = markup ! ts b nb !+ ss nb ! vsN (kv b nb f t ++ [t])
                  [(1-b),((1-b) + b / fromIntegral (2*nb)) ..] ++ [1])
           ss x = ksC $ isc $ "0 0 1 1" : replicate x "0 .75 .25 1; 1 .75 .25 0"
 
+-- animate attribute such that it returns b percent of way to original
+-- and repeat nb times. f = original t = final (from, to)
 bounce :: Double -> Int -> Double -> Double -> Markup
 bounce b nb f t = bounceFX kv b nb f t
     where kv b nb f t = intersperse t $ take (nb+1) (map (t-)
                             $ iterate (*b) (t-f))
 
+-- overshoot and return repeatedly, like bounce
 settle :: Double -> Int -> Double -> Double -> Markup
 settle b nb f t = bounceFX kv b nb f t
     where kv b nb f t = f : take (nb*2) (zipWith ($) (cycle [(t+),(t-)])
                                              (iterate (*b) (b*(t-f))))
 
+-- start by animating in opposite direction b percent
 runningStart :: Double -> Double -> Double -> Markup
 runningStart b f t = markup ! vsN [f,f - ((t-f)*b) ,t]
                             ! keyTimes (iscN [0,b / (1+2 * b),1])
                             !+ ksC "0 .75 .25 1; 1 .9 .1 0"
 
+-- go past target b percent and return
 overShoot :: Double -> Double -> Double -> Markup
 overShoot b f t = markup ! vsN [f, t + ((t-f)*b), t]
                             ! keyTimes (iscN [0,1 - (b / (1+2 * b)),1])
@@ -183,6 +196,8 @@ speedUp = ksC "1 .8 .3 .1"
 slowDown :: Markup
 slowDown = ksC "0 .2 .8 1"
 
+-- animate tracing path with current stroke for r repetitions of d duration
+-- l = path length. Pure func called from tracePath
 trace :: Double -> Double -> Double -> Markup
 trace d r l = markup ! strokeDashoffset (show l)
               ! strokeDasharray (show l ++ "," ++ show l)
@@ -196,22 +211,30 @@ insert = insertNS xmlns
 node :: DString -> Fay Node
 node = nodeNS xmlns
 
+-- start an animation
 start :: Node -> Fay Node
 start = ffi "%1['beginElement']() || %1"
 
+-- stop an animation
 stop :: Node -> Fay Node
 stop = ffi "%1['endElement']() || %1"
 
+-- zip Markup to Node using insert
 zipInsert :: [Markup] -> [Node] -> Fay [Node]
 zipInsert = zipWithM insert
 
+-- stagger an a attribute starting with s and incrementing i across list of
+-- Nodes
 stagger :: String -> Double -> Double -> [Node] -> Fay [Node]
 stagger a s i = zipInsert $ map go [s, s + i ..]
         where go x = markup ! Attribute a (show x)
 
+-- get length of all segments of path node
 totalLength :: Node -> Fay Double
 totalLength = ffi "%1['getTotalLength']()"
 
+-- animate tracing path with current stroke for r repetitions of d duration
+-- impure because path length must be determined
 tracePath :: Double -> Double -> Node -> Fay Node
 tracePath d r n = do l <- totalLength n
                      insert (trace d r l) n
@@ -241,7 +264,8 @@ typeA = Attribute "type"
 inA :: String -> Primitive
 inA = Attribute "in"
 
--- HACK!!!
+-- HACK!!! to mimic Haskell's show instead of getting JSON
+
 inst :: Automatic a -> String
 inst = ffi "%1['instance'] + ' '"
 
@@ -251,8 +275,8 @@ slot = ffi "(%2['slot'+%1] != null && (%2['slot'+%1] + ' ')) || ''"
 hShow :: Automatic a -> String
 hShow x = inst x ++ concatMap (`slot` x) [1 .. 8]
 
--- Simple combinators for conversion to string.  Nothing interesting
--- follows.
+-- (possibly) numeric attributes
+
 beginN :: a -> Primitive
 beginN = Attribute "begin" . show
 
