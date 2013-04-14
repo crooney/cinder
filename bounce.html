@@ -44,10 +44,33 @@
     <div id="main_content_wrap" class="outer">
         <section id="main_content" class="inner">
             <h3 id="bounce-example">Bounce Example</h3>
-            <p>TBD: Explain some shit here.</p>
+            <p>Explained below.</p>
             <embed height="625" width="400" id="EXAMPLE" name="EXAMPLE" src="examples/Bouncer.svg"/>
             
-            
+            <p>This example drmonstrates how markup may be generated to make short work of fairly complex SVG.</p>
+            <pre class="sourceCode haskell"><code class="sourceCode haskell">bouncer <span class="fu">=</span> <span class="kw">do</span>
+                root <span class="fu">&gt;&gt;=</span> insert circ
+                root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;circle&quot;</span> <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;cx&quot;</span> <span class="dv">50</span> <span class="dv">100</span>
+                root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;animate&quot;</span> <span class="fu">&gt;&gt;=</span> zipInsert fx <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;begin&quot;</span> <span class="dv">0</span> <span class="dv">2</span>
+                <span class="fu">return</span> ()
+                <span class="kw">where</span>
+                    circ <span class="fu">=</span> <span class="fu">foldl1</span> (<span class="fu">!+</span>) <span class="fu">$</span> <span class="fu">map</span> go colors
+                    go x <span class="fu">=</span> cRXY <span class="dv">25</span> <span class="dv">50</span> <span class="dv">100</span> <span class="fu">!</span> fill x <span class="fu">!+</span> aADR <span class="st">&quot;cy&quot;</span> <span class="fl">2.0</span> <span class="dv">1</span> <span class="fu">!</span> fill <span class="st">&quot;freeze&quot;</span>
+                                <span class="fu">!</span> begin <span class="st">&quot;indefinite&quot;</span> <span class="fu">!&lt;</span> <span class="dt">Complete</span>
+                    fx <span class="fu">=</span> [bounce <span class="fl">0.4</span> <span class="dv">3</span> <span class="dv">100</span> <span class="dv">400</span>, settle <span class="fl">0.35</span> <span class="dv">3</span> <span class="dv">100</span> <span class="dv">400</span>,
+                          bounce <span class="fl">0.75</span> <span class="dv">4</span> <span class="dv">100</span> <span class="dv">400</span>, settle <span class="fl">0.65</span> <span class="dv">4</span> <span class="dv">100</span> <span class="dv">400</span>]
+                    colors <span class="fu">=</span> [<span class="st">&quot;lightpink&quot;</span>, <span class="st">&quot;lightblue&quot;</span>, <span class="st">&quot;lightsalmon&quot;</span>, <span class="st">&quot;lightgreen&quot;</span>]</code></pre>
+            <p><code>go</code> marries a simple circle definition to a color and then sets it to animate its vertical position (<code>cy</code>), without specifying how it should animate. The resulting four circles are then inserted into the document's root <code>Node</code>. A list of the circle <code>Node</code>s is retrieved and their horizontal positions (<code>cx</code>) staggered to make a row. A list of <code>Markup</code>, created by effects functions bounce and settle, is applied to the animation <code>Node</code>s and their start times staggered. And that's it.</p>
+            <p>The expansion is similar but works on the radius (<code>r</code>) attribute:</p>
+            <pre class="sourceCode haskell"><code class="sourceCode haskell">grower <span class="fu">=</span> <span class="kw">do</span>
+                root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;animate&quot;</span> <span class="fu">&gt;&gt;=</span> <span class="fu">mapM_</span> deleteSelf
+                root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;circle&quot;</span> <span class="fu">&gt;&gt;=</span> zipInsert an
+                root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;animate&quot;</span> <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;begin&quot;</span> <span class="dv">9</span> <span class="fl">0.75</span>
+                <span class="fu">return</span> ()
+                <span class="kw">where</span>
+                    an <span class="fu">=</span> <span class="fu">zipWith</span> (<span class="fu">!+</span>) (<span class="fu">repeat</span> (aADR <span class="st">&quot;r&quot;</span> <span class="fl">0.75</span> <span class="dv">1</span> <span class="fu">!</span> fill <span class="st">&quot;freeze&quot;</span>))
+                                        [bounce <span class="fl">0.5</span> <span class="dv">5</span> <span class="dv">25</span> <span class="dv">50</span>, settle <span class="fl">0.45</span> <span class="dv">5</span> <span class="dv">25</span> <span class="dv">50</span>,
+                                         bounce <span class="fl">0.85</span> <span class="dv">6</span> <span class="dv">25</span> <span class="dv">50</span>, settle <span class="fl">0.75</span> <span class="dv">6</span> <span class="dv">25</span> <span class="dv">50</span>]</code></pre>
         </section>
     </div>
 
