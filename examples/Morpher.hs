@@ -10,10 +10,10 @@ main = addEventListener "load" morpher False
 
 morpher :: Fay ()
 morpher = do
-    root >>= insert morpher
+    root >>= insert mu
     return ()
     where
-        morpher = markup !+ pathD dFrom ! fill "cyan" !+ aADR "d" 5.5 9
+        mu = markup !+ pathD dFrom ! fill "cyan" !+ aADR "d" 5.5 9
             ! vs [showD dFrom,showD dTo,showD dFrom] !< Complete
         dFrom = [M 200 200, Q 510 10 320 200, Q 510 510 320 320,
                 Q 10 510 200 320, Q 10 10 200 200]
