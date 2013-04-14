@@ -26,7 +26,7 @@ eX :: Primitive -> String -> Markup
 eX e c = markup ! e !: c
 
 eCX :: Primitive -> String -> String -> Markup
-eCX e cl c = eC e c ! classA cl
+eCX e cl c = eX e c ! classA cl
 
 dX :: String -> Markup
 dX = eX div

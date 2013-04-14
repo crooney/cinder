@@ -16,10 +16,10 @@ htest = byId "BODY" >>= insert mu
         >> putStrLn (pretty mu)
     where mu = markup
                 ! div ! id "foo"
-                    ! p !+ iC "hello " !+ bC "there" !< Complete
+                    ! p !+ iX "hello " !+ bX "there" !< Complete
                 !< h1 !: "someshit" !< h4 !: "othershit"
-                !<+ dCC "classy" "some lovely content in a div"
-                !<+ pCC "classy" "and some in a classed p"
+                !<+ dCX "classy" "some lovely content in a div"
+                !<+ pCX "classy" "and some in a classed p"
                 !< Complete
           st = markup ! style ! typeA "text/css"
                 !: ".classy {border: solid blue 2px;}" ! Complete
