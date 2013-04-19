@@ -46,6 +46,9 @@ byId = ffi "document['getElementById'](%1)"
 byTag :: String -> Node -> Fay [Node]
 byTag = ffi "%2['getElementsByTagName'](%1)"
 
+byClass :: String -> Node -> Fay [Node]
+byClass = ffi "%2['getElementsByClassName'](%1)"
+
 parent :: Node -> Fay Node
 parent = ffi "%1['parentNode']"
 

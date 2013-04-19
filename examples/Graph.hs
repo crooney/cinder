@@ -56,10 +56,10 @@ barPaths xs = zipWith go xs [1,3 ..]
 
 switch :: String -> Fay ()
 -- this is all that's necessary for FF and I think is correct.
--- switch next = matching next >>= mapM_ start
+-- switch next = root >>= byClass next >>= mapM_ start
 -- full version is to placate Chromium
 switch next = do
-    ms <- matching next
+    ms <- root >>= byClass next
     ps <- mapM parent ms
     mapM_ deleteSelf ms
     zipWithM_ setParent ps ms
@@ -83,9 +83,6 @@ frz :: Primitive
 frz = fill "freeze"
 
 data Event
-
-matching :: String -> Fay [Node]
-matching = ffi "document['getElementsByClassName'](%1)"
 
 setListener :: String -> (Event -> Fay ()) -> Node -> Fay ()
 setListener = ffi "%3['addEventListener'](%1,%2,null)"
