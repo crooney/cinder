@@ -254,6 +254,14 @@ animVal = ffi "%2['%1']['animVal']"
 animValN :: String -> Node -> Fay Double
 animValN = ffi "%2['%1']['animVal']"
 
+-- global pause and unpause animations
+
+pauseAll :: Fay ()
+pauseAll = ffi "document['documentElement']['pauseAnimations']()"
+
+unpauseAll :: Fay ()
+unpauseAll = ffi "document['documentElement']['unpauseAnimations']()"
+
 -- attributes whose names conflict with keywords
 classA :: String -> Primitive
 classA = Attribute "class"
