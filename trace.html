@@ -46,11 +46,12 @@
             <h3 id="trace-example">Trace Example</h3>
             <embed height="125" width="400" id="EXAMPLE" name="EXAMPLE" src="examples/Nifty.svg"/>
             
+            <p><em>Note: This example misbehaves under Chromium for understood reasons, which I believe constitute a bug in Chromium. A workaround is known. but would be very complex for this piece and render it unfit as an example. Please view in Firefox for correct behaviour</em></p>
             <p>This is the only example that doesn't start with an empty SVG file. I made it in Inkscape, converting the text to paths. The animation code is here:</p>
             <pre class="sourceCode haskell"><code class="sourceCode haskell">nifty <span class="fu">=</span> root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;path&quot;</span> <span class="fu">&gt;&gt;=</span> <span class="fu">mapM</span> (tracePath <span class="fl">0.5</span> <span class="dv">1</span>)
                     <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;begin&quot;</span> <span class="dv">0</span> <span class="fl">0.5</span> <span class="fu">&gt;&gt;</span> <span class="fu">return</span> ()</code></pre>
-            <p>After retrieving the document's root <code>Node</code>, it asks for a list of path Nodes and calls <code>tracePath</code> for each of them, with a duration of a half-second. <code>tracePath</code> is impure, because it has to query the node for its length and it does its own inserting. The nodes are then scheduled to start a half second apart, and that's it.</p>
-            <p>Note <code>mapM</code> is not part of the (Fay) <code>Prelude</code> but is one of several functions from <code>Control.Monad</code> of which Cinder provides monomorphic equivalents in Control.Fay.</p>
+            <p>After retrieving the document's root <code>Node</code>, it asks for a list of path Nodes and calls <code>tracePath</code> for each of them, with a duration of a half-second. <code>tracePath</code> is impure, because it has to query the node for its length. The nodes are then scheduled to start a half second apart, and that's it.</p>
+            <p>Note <code>mapM</code> is not part of the (Fay) <code>Prelude</code> but is one of several functions from <code>Control.Monad</code> for which Cinder provides monomorphic equivalents in Control.Fay.</p>
             <p>Reload to restart.</p>
         </section>
     </div>
