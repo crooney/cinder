@@ -7,6 +7,7 @@
     <meta name="description" content="Cinder : Markup (HTML and SVG) and DOM manipulation DSL for the Fay subset of Haskell." />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/code.css">
 
     <title>Cinder</title>
   </head>
@@ -43,33 +44,32 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
         <section id="main_content" class="inner">
-            <h3 id="bounce-example">Bounce Example</h3>
-            <p>Explained below.</p>
-            <embed height="625" width="400" id="EXAMPLE" name="EXAMPLE" src="examples/Bouncer.svg"/>
-            
-            <p>This example demonstrates how markup may be generated to make short work of fairly complex SVG.</p>
-            <pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">bouncer ::</span> <span class="dt">Fay</span> ()
-            bouncer <span class="fu">=</span> <span class="kw">do</span>
-                g <span class="ot">&lt;-</span> node <span class="st">&quot;g&quot;</span> <span class="fu">&gt;&gt;=</span> insert circ
-                byTag <span class="st">&quot;circle&quot;</span> g <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;cx&quot;</span> <span class="dv">50</span> <span class="dv">100</span>
-                byClass <span class="st">&quot;drop&quot;</span> g <span class="fu">&gt;&gt;=</span> zipInsert fxd <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;begin&quot;</span> <span class="dv">0</span> <span class="dv">2</span>
-                byClass <span class="st">&quot;grow&quot;</span> g <span class="fu">&gt;&gt;=</span> zipInsert fxg <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;begin&quot;</span> <span class="dv">9</span> <span class="fl">0.75</span>
-                root <span class="fu">&gt;&gt;=</span> setChild g
-                <span class="fu">return</span> ()
-                <span class="kw">where</span>
-                    circ <span class="fu">=</span> <span class="fu">foldl1</span> (<span class="fu">!+</span>) <span class="fu">$</span> <span class="fu">map</span> go colors
-                    go x <span class="fu">=</span> cRXY <span class="dv">25</span> <span class="dv">50</span> <span class="dv">100</span> <span class="fu">!</span> fill x
-                                <span class="fu">!+</span> aADR <span class="st">&quot;cy&quot;</span> <span class="fl">2.0</span> <span class="dv">1</span> <span class="fu">!</span> fill <span class="st">&quot;freeze&quot;</span> <span class="fu">!</span> classA <span class="st">&quot;drop&quot;</span>
-                                <span class="fu">!&lt;+</span> aADR <span class="st">&quot;r&quot;</span> <span class="fl">0.75</span> <span class="dv">1</span> <span class="fu">!</span> fill <span class="st">&quot;freeze&quot;</span> <span class="fu">!</span> classA <span class="st">&quot;grow&quot;</span>
-                           <span class="fu">!&lt;</span> <span class="dt">Complete</span>
-                    fxd <span class="fu">=</span> [bounce <span class="fl">0.4</span> <span class="dv">3</span> <span class="dv">100</span> <span class="dv">400</span>, settle <span class="fl">0.35</span> <span class="dv">3</span> <span class="dv">100</span> <span class="dv">400</span>,
-                           bounce <span class="fl">0.75</span> <span class="dv">4</span> <span class="dv">100</span> <span class="dv">400</span>, settle <span class="fl">0.65</span> <span class="dv">4</span> <span class="dv">100</span> <span class="dv">400</span>]
-                    fxg <span class="fu">=</span> [bounce <span class="fl">0.5</span> <span class="dv">5</span> <span class="dv">25</span> <span class="dv">50</span>, settle <span class="fl">0.45</span> <span class="dv">5</span> <span class="dv">25</span> <span class="dv">50</span>,
-                           bounce <span class="fl">0.85</span> <span class="dv">6</span> <span class="dv">25</span> <span class="dv">50</span>, settle <span class="fl">0.75</span> <span class="dv">6</span> <span class="dv">25</span> <span class="dv">50</span>]
-                    colors <span class="fu">=</span> [<span class="st">&quot;lightpink&quot;</span>, <span class="st">&quot;lightblue&quot;</span>, <span class="st">&quot;lightsalmon&quot;</span>, <span class="st">&quot;lightgreen&quot;</span>]</code></pre>
-            <p>First a <code>g</code> (group) SVG node is created and four circles of pleasing colors added to it, along with animations of their radii and y coordinates, with only duration and repeat count specified. Note the second call to <code>aADR</code> follows a <code>!&lt;+</code> which closes the previous one. The circles are then taken from the DOM into a list and their x coordinates staggered. Next previously unspecified portions of the animations, (time, splice, and value arrays) are inserted directly into their respective <code>animate</code> nodes via <code>zipInsert</code>. Their start times are staggered, and the <code>g</code> node containing the whole shmear inserted into the document root, and happy animation obtains.</p>
-            <p>It may be edifying to look at the DOM in Firebug or Developer tools.</p>
-            <p>Note that the use of the grouping node is only necessary for Chromium, which I believe has a bug. This is the same thing that affects the trace example, but may be more easily worked around here.</p>
+<h3 id="bounce-example">Bounce Example</h3>
+<p>Explained below.</p>
+<embed height="625" width="400" id="EXAMPLE" name="EXAMPLE" src="examples/Bouncer.svg"/>
+
+<p>This example demonstrates how markup may be generated to make short work of fairly complex SVG.</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell">bouncer <span class="fu">=</span> <span class="kw">do</span>
+    g <span class="ot">&lt;-</span> node <span class="st">&quot;g&quot;</span> <span class="fu">&gt;&gt;=</span> insert circ
+    byTag <span class="st">&quot;circle&quot;</span> g <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;cx&quot;</span> <span class="dv">50</span> <span class="dv">100</span>
+    byClass <span class="st">&quot;drop&quot;</span> g <span class="fu">&gt;&gt;=</span> zipInsert fxd <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;begin&quot;</span> <span class="dv">0</span> <span class="dv">2</span>
+    byClass <span class="st">&quot;grow&quot;</span> g <span class="fu">&gt;&gt;=</span> zipInsert fxg <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;begin&quot;</span> <span class="dv">9</span> <span class="fl">0.75</span>
+    root <span class="fu">&gt;&gt;=</span> setChild g
+    <span class="fu">return</span> ()
+    <span class="kw">where</span>
+        circ <span class="fu">=</span> <span class="fu">foldl1</span> (<span class="fu">!+</span>) <span class="fu">$</span> <span class="fu">map</span> go colors
+        go x <span class="fu">=</span> cRXY <span class="dv">25</span> <span class="dv">50</span> <span class="dv">100</span> <span class="fu">!</span> fill x
+                    <span class="fu">!+</span> aADR <span class="st">&quot;cy&quot;</span> <span class="fl">2.0</span> <span class="dv">1</span> <span class="fu">!</span> fill <span class="st">&quot;freeze&quot;</span> <span class="fu">!</span> classA <span class="st">&quot;drop&quot;</span>
+                    <span class="fu">!&lt;+</span> aADR <span class="st">&quot;r&quot;</span> <span class="fl">0.75</span> <span class="dv">1</span> <span class="fu">!</span> fill <span class="st">&quot;freeze&quot;</span> <span class="fu">!</span> classA <span class="st">&quot;grow&quot;</span>
+               <span class="fu">!&lt;</span> <span class="dt">Complete</span>
+        fxd <span class="fu">=</span> [bounce <span class="fl">0.4</span> <span class="dv">3</span> <span class="dv">100</span> <span class="dv">400</span>, settle <span class="fl">0.35</span> <span class="dv">3</span> <span class="dv">100</span> <span class="dv">400</span>,
+               bounce <span class="fl">0.75</span> <span class="dv">4</span> <span class="dv">100</span> <span class="dv">400</span>, settle <span class="fl">0.65</span> <span class="dv">4</span> <span class="dv">100</span> <span class="dv">400</span>]
+        fxg <span class="fu">=</span> [bounce <span class="fl">0.5</span> <span class="dv">5</span> <span class="dv">25</span> <span class="dv">50</span>, settle <span class="fl">0.45</span> <span class="dv">5</span> <span class="dv">25</span> <span class="dv">50</span>,
+               bounce <span class="fl">0.85</span> <span class="dv">6</span> <span class="dv">25</span> <span class="dv">50</span>, settle <span class="fl">0.75</span> <span class="dv">6</span> <span class="dv">25</span> <span class="dv">50</span>]
+        colors <span class="fu">=</span> [<span class="st">&quot;lightpink&quot;</span>, <span class="st">&quot;lightblue&quot;</span>, <span class="st">&quot;lightsalmon&quot;</span>, <span class="st">&quot;lightgreen&quot;</span>]</code></pre>
+<p>First a <code>g</code> (group) SVG node is created and four circles of pleasing colors added to it, along with animations of their radii and y coordinates, with only duration and repeat count specified. Note the second call to <code>aADR</code> follows a <code>!&lt;+</code> which closes the previous one. The circles are then taken from the DOM into a list and their x coordinates staggered. Next previously unspecified portions of the animations, (time, splice, and value arrays) are inserted directly into their respective <code>animate</code> nodes via <code>zipInsert</code>. Their start times are staggered, and the <code>g</code> node containing the whole shmear inserted into the document root, and happy animation obtains.</p>
+<p>It may be edifying to look at the DOM in Firebug or Developer tools.</p>
+<p>Note that the use of the grouping node is only necessary for Chromium, which I believe has a bug. This is the same thing that affects the trace example, but may be more easily worked around here.</p>
         </section>
     </div>
 

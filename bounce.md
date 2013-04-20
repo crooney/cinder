@@ -8,7 +8,6 @@ This example demonstrates how markup may be generated to make short work of fair
 complex SVG.
 
 ```haskell
-bouncer :: Fay ()
 bouncer = do
     g <- node "g" >>= insert circ
     byTag "circle" g >>= stagger "cx" 50 100
