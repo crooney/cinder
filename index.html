@@ -7,6 +7,7 @@
     <meta name="description" content="Cinder : Markup (HTML and SVG) and DOM manipulation DSL for the Fay subset of Haskell." />
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/code.css">
 
     <title>Cinder</title>
   </head>
@@ -43,33 +44,33 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
         <section id="main_content" class="inner">
-            <p>These pages only exist as a place to host the examples. What follows on this page is only a (possibly out of date) copy of the project's README.</p>
-            <h2 id="cinder">Cinder</h2>
-            <p>Cinder is a markup and DOM manipulation DSL for the excellent <a href="http://fay-lang.org">Fay</a> subset of Haskell.</p>
-            <p>It may be simpler to look at the <a href="http://crooney.github.io/cinder">examples</a> to get a feel for the lib.</p>
-            <h3 id="dsl">DSL</h3>
-            <p>Cinder has combinators defined for all elements and attributes of its modeled markups (currently HTML and SVG), as well as inline combinators for them. For example, the body of a simple web page could be specified like this:</p>
-            <pre class="sourceCode haskell"><code class="sourceCode haskell">myBody <span class="fu">=</span> markup <span class="fu">!</span> body <span class="fu">!</span> bgcolor <span class="st">&quot;lightblue&quot;</span>
-                                <span class="fu">!&gt;</span> h1 <span class="fu">!:</span> <span class="st">&quot;Cheers&quot;</span>
-                                <span class="fu">!&lt;</span> p <span class="fu">!:</span> <span class="st">&quot;Visit Margarita!&quot;</span>
-                                    <span class="fu">!+&gt;</span> imgSA <span class="st">&quot;i.png&quot;</span> <span class="st">&quot;La Isla&quot;</span> <span class="fu">!</span> <span class="dt">Complete</span>
-                            <span class="fu">!&lt;</span> <span class="dt">Complete</span></code></pre>
-            <p>A single <code>!</code> (or <code>!&gt;</code>) signals that the following element or attribute is a child of the current element. <code>!:</code> signifies that content follows. <code>!</code> followed by the constructor <code>Complete</code> closes the current element and causes following markup to belong to the immediate parent. <code>!&lt;</code> is equivalent to <code>! Complete !</code>, that is, it closes the current element and takes starts right in on a sibling. As a special case <code>!&lt; Complete</code> closes all pending elements. So, in the example,the <code>h1</code> is closed by the <code>!&lt;</code> before <code>p</code>, the <code>img</code> closed explicitly and the <code>p</code> and <code>body</code> are closed by the <code>!&lt; Complete</code>. The <code>! Complete</code> after the <code>img</code> tag is superfluous, but harmless.</p>
-            <p>Further, complete sections of markup may be added by <code>!+</code> (or <code>!+&lt;</code> or <code>!+&gt;</code>). Convenience functions are available to add complete tags with commonly used attributes in this manner. For instance <code>imgSA &quot;i.png&quot; &quot;La Isla&quot;</code> is exactly equivalent to <code>markup ! img ! src &quot;i.png&quot; ! alt &quot;La Isla&quot;</code>.</p>
-            <p>Attribute constructors which may reasonably expect numeric arguments may be postfixed by N as a convenience: <code>heightN 100</code> as opposed to <code>height (show 100)</code>.</p>
-            <h3 id="dom">DOM</h3>
-            <p>DOM manipulation happens mostly through <code>insert</code> which takes markup and a DOM node and does the obvious. Various functionality is built on top of it, for zipping lists of markup into lists of nodes, etc. In addition, various DOM manipulations not directly related to the DSL are supported.</p>
-            <p>The following, from one of the examples, deletes all animations, inserts a special effect animation into each circle tag and staggers the animations to start 3/4s of a second apart.</p>
-            <pre class="sourceCode haskell"><code class="sourceCode haskell">grower <span class="fu">=</span> <span class="kw">do</span> root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;animate&quot;</span> <span class="fu">&gt;&gt;=</span> <span class="fu">mapM_</span> deleteSelf
-                        root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;circle&quot;</span> <span class="fu">&gt;&gt;=</span> zipInsert an
-                        root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;animate&quot;</span> <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;begin&quot;</span> <span class="dv">9</span> <span class="fl">0.75</span>
-                        <span class="fu">return</span> ()
-                <span class="kw">where</span> an <span class="fu">=</span> <span class="fu">zipWith</span> (<span class="fu">!+</span>) (<span class="fu">repeat</span> (aADR <span class="st">&quot;r&quot;</span> <span class="fl">0.75</span> <span class="dv">1</span> <span class="fu">!</span> fill <span class="st">&quot;freeze&quot;</span>))
-                                        [bounce <span class="fl">0.5</span> <span class="dv">5</span> <span class="dv">25</span> <span class="dv">50</span>, settle <span class="fl">0.45</span> <span class="dv">5</span> <span class="dv">25</span> <span class="dv">50</span>,
-                                         bounce <span class="fl">0.85</span> <span class="dv">6</span> <span class="dv">25</span> <span class="dv">50</span>, settle <span class="fl">0.75</span> <span class="dv">6</span> <span class="dv">25</span> <span class="dv">50</span>]</code></pre>
-            <p>The convenience <code>aADR &quot;r&quot; 0.75 1</code> is equal to <code>markup ! animate ! attributeName &quot;r&quot; ! durN 0.75 ! repeatCountN 1</code>.</p>
-            <h3 id="svg">SVG</h3>
-            <p>Cinder started out as an SVG library, before it was realized that it could be generally useful. All the examples but one are in SVG and almost no convenience funcs beyond constructors that accept numbers have been yet written for HTML.</p>
+<p>These pages only exist as a place to host the examples. What follows on this page is only a badly formatted (and possibly out of date) copy of the project's README.</p>
+<h2 id="cinder">Cinder</h2>
+<p>Cinder is a markup and DOM manipulation DSL for the excellent <a href="http://fay-lang.org">Fay</a> subset of Haskell.</p>
+<p>It may be simpler to look at the <a href="http://crooney.github.io/cinder">examples</a> to get a feel for the lib.</p>
+<h3 id="dsl">DSL</h3>
+<p>Cinder has combinators defined for all elements and attributes of its modeled markups (currently HTML and SVG), as well as inline combinators for them. For example, the body of a simple web page could be specified like this:</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell">myBody <span class="fu">=</span> markup <span class="fu">!</span> body <span class="fu">!</span> bgcolor <span class="st">&quot;lightblue&quot;</span>
+                    <span class="fu">!&gt;</span> h1 <span class="fu">!:</span> <span class="st">&quot;Cheers&quot;</span>
+                    <span class="fu">!&lt;</span> p <span class="fu">!:</span> <span class="st">&quot;Visit Margarita!&quot;</span>
+                        <span class="fu">!+&gt;</span> imgSA <span class="st">&quot;i.png&quot;</span> <span class="st">&quot;La Isla&quot;</span> <span class="fu">!</span> <span class="dt">Complete</span>
+                <span class="fu">!&lt;</span> <span class="dt">Complete</span></code></pre>
+<p>A single <code>!</code> (or <code>!&gt;</code>) signals that the following element or attribute is a child of the current element. <code>!:</code> signifies that content follows. <code>!</code> followed by the constructor <code>Complete</code> closes the current element and causes following markup to belong to the immediate parent. <code>!&lt;</code> is equivalent to <code>! Complete !</code>, that is, it closes the current element and takes starts right in on a sibling. As a special case <code>!&lt; Complete</code> closes all pending elements. So, in the example,the <code>h1</code> is closed by the <code>!&lt;</code> before <code>p</code>, the <code>img</code> closed explicitly and the <code>p</code> and <code>body</code> are closed by the <code>!&lt; Complete</code>. The <code>! Complete</code> after the <code>img</code> tag is superfluous, but harmless.</p>
+<p>Further, complete sections of markup may be added by <code>!+</code> (or <code>!+&lt;</code> or <code>!+&gt;</code>). Convenience functions are available to add complete tags with commonly used attributes in this manner. For instance <code>imgSA &quot;i.png&quot; &quot;La Isla&quot;</code> is exactly equivalent to <code>markup ! img ! src &quot;i.png&quot; ! alt &quot;La Isla&quot;</code>.</p>
+<p>Attribute constructors which may reasonably expect numeric arguments may be postfixed by N as a convenience: <code>heightN 100</code> as opposed to <code>height (show 100)</code>.</p>
+<h3 id="dom">DOM</h3>
+<p>DOM manipulation happens mostly through <code>insert</code> which takes markup and a DOM node and does the obvious. Various functionality is built on top of it, for zipping lists of markup into lists of nodes, etc. In addition, various DOM manipulations not directly related to the DSL are supported.</p>
+<p>The following, from one of the examples, deletes all animations, inserts a special effect animation into each circle tag and staggers the animations to start 3/4s of a second apart.</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell">grower <span class="fu">=</span> <span class="kw">do</span> root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;animate&quot;</span> <span class="fu">&gt;&gt;=</span> <span class="fu">mapM_</span> deleteSelf
+            root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;circle&quot;</span> <span class="fu">&gt;&gt;=</span> zipInsert an
+            root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;animate&quot;</span> <span class="fu">&gt;&gt;=</span> stagger <span class="st">&quot;begin&quot;</span> <span class="dv">9</span> <span class="fl">0.75</span>
+            <span class="fu">return</span> ()
+    <span class="kw">where</span> an <span class="fu">=</span> <span class="fu">zipWith</span> (<span class="fu">!+</span>) (<span class="fu">repeat</span> (aADR <span class="st">&quot;r&quot;</span> <span class="fl">0.75</span> <span class="dv">1</span> <span class="fu">!</span> fill <span class="st">&quot;freeze&quot;</span>))
+                            [bounce <span class="fl">0.5</span> <span class="dv">5</span> <span class="dv">25</span> <span class="dv">50</span>, settle <span class="fl">0.45</span> <span class="dv">5</span> <span class="dv">25</span> <span class="dv">50</span>,
+                             bounce <span class="fl">0.85</span> <span class="dv">6</span> <span class="dv">25</span> <span class="dv">50</span>, settle <span class="fl">0.75</span> <span class="dv">6</span> <span class="dv">25</span> <span class="dv">50</span>]</code></pre>
+<p>The convenience <code>aADR &quot;r&quot; 0.75 1</code> is equal to <code>markup ! animate ! attributeName &quot;r&quot; ! durN 0.75 ! repeatCountN 1</code>.</p>
+<h3 id="svg">SVG</h3>
+<p>Cinder started out as an SVG library, before it was realized that it could be generally useful. All the examples but one are in SVG and almost no convenience funcs beyond constructors that accept numbers have been yet written for HTML.</p>
         </section>
     </div>
 
