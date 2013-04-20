@@ -17,7 +17,7 @@ myBody = markup ! body ! bgcolor "lightblue"
                 !< Complete
 ```
 
-A single `!` (or `!>`) signals that the following element or attribute is a child of the current element. `!:` signifies that content follows. `!` followed by the constructor `Complete` closes the current element and causes following markup to belong to the immediate parent. `!<` is equivalent to `! Complete !`, that is, it closes the current element and takes starts right in on a sibling. As a special case `!< Complete` closes all pending elements. So, in the example,the `h1` is closed by the `!<` before `p`, the `img` closed explicitly and the `p` and `body` are closed by the `!< Complete`. The `! Complete` after the `img` tag is superfluous, but harmless.
+A single `!` (or `!>`) signals that the following element or attribute is a child of the current element. `!:` signifies that content follows. `!` followed by the constructor `Complete` closes the current element and causes following markup to belong to the immediate parent. `!<` is equivalent to `! Complete !`, that is, it closes the current element and starts right in on a sibling. As a special case `!< Complete` closes all pending elements. So, in the example,the `h1` is closed by the `!<` before `p`, the `img` closed explicitly and the `p` and `body` are closed by the `!< Complete`. The `! Complete` after the `img` tag is superfluous, but harmless.
 
 Further, complete sections of markup may be added by `!+` (or `!+<` or `!+>`). Convenience functions are available to add complete tags with commonly used attributes in this manner.  For instance `imgSA "i.png" "La Isla"` is exactly equivalent to `markup ! img ! src "i.png" ! alt "La Isla"`.
 
