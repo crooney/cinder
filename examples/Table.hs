@@ -14,7 +14,7 @@ colors = go [ (r,g,b) | r <- s, g <- s, b <- s]
 
 tableMU = markup ! table !+ foldl1 (!+) (map row colors) ! Complete
     where row x = markup ! tr !+ foldl1 (!+) (map box x) ! Complete
-          box x = markup ! td ! sty x ! Complete
+          box x = markup ! td ! sty x ! inner "&#955;" ! Complete
           sty x = style ("height:20px;width:20px;background-color:" ++ x)
 
 htex :: Fay ()

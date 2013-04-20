@@ -28,6 +28,7 @@ type DString = String
 data Primitive = Content DString
                | Element DString
                | Attribute DString DString
+               | Property DString DString
                | Complete
     deriving Show
 
@@ -89,6 +90,12 @@ atN t v = Attribute t (show v)
 atP :: DString -> Double -> Primitive
 atP t v = Attribute t (show v ++ "%")
 
+pr :: DString -> DString -> Primitive
+pr = Property
+
+prN :: DString -> a -> Primitive
+prN t v = Property t (show v)
+
 co :: DString -> Primitive
 co = Content
 
@@ -104,6 +111,7 @@ pretty m = concat $ zipWith cat ins rm
           cat i x = replicate (i * 4) ' ' ++ go x ++ "\n"
           go (Element   x)   = "<" ++ x ++ ">"
           go (Attribute x y) = x ++ "=\"" ++ y ++ "\""
+          go (Property x y)  = x ++ "=\"" ++ y ++ "\""
           go (Content   x)   = "\"" ++ x ++ "\""
           go (Complete)      = "<--"
 
