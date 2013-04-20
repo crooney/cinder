@@ -1,6 +1,3 @@
-{-- vim: set filetype=haskell.fay : --}
-{-# LANGUAGE EmptyDataDecls #-}
-
 module Cinder.DOM (module Cinder.DOM, module Cinder.DSL) where
 
 import Prelude
@@ -64,21 +61,11 @@ attrNum = ffi "%2['getAttributeNS'](null,%1)"
 attrStr :: String -> Node -> Fay String
 attrStr = ffi "%2['getAttributeNS'](null,%1)"
 
-constrainByte :: Int -> Int
-constrainByte = ffi "Math.min(255,Math.max(0,%1))"
-
 toLower :: String -> String
 toLower = ffi "String(%1)['toLowerCase']()"
 
-color :: Int -> Int -> Int -> Int
-color r g b = constrainByte r * 256 * 256 +
-              constrainByte g * 256 + constrainByte b
-
-atColor :: Int -> String
-atColor = ffi "'#' + %1['toString'](16)"
-
-atC :: String -> Int -> Primitive
-atC k v = Attribute k (atColor v)
+color :: (Int, Int, Int) -> String
+color (r, g, b) = "rgb(" ++ show r ++ "," ++ show g ++ "," ++ show b ++ ")"
 
 insertNS :: String -> Markup -> Node -> Fay Node
 insertNS s m n = foldM go n (reverse m)
