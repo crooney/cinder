@@ -25,6 +25,12 @@ setChild = ffi "(%2['appendChild'](%1) && null) || %2"
 setParent :: Node -> Node -> Fay Node
 setParent = ffi "(%1['appendChild'](%2) && null) || %2"
 
+setAttribute :: String -> String -> Node -> Fay Node
+setAttribute = ffi "(%3['setAttributeNS'](null,%1,%2) && null) || %3"
+
+setProperty :: String -> String -> Node -> Fay Node
+setProperty = ffi "((%3[%1] = %2) && null) || %3"
+
 deleteSelf :: Node -> Fay ()
 deleteSelf = ffi "%1['parentNode']['removeChild'](%1)"
 
@@ -33,9 +39,6 @@ deleteChild = ffi "(%1['removeChild'](%2) && null) || %1"
 
 replace :: Node -> Node -> Fay Node
 replace = ffi "%1['parentNode']['replaceChild'](%2,%1) || %2"
-
-setAttr :: String -> String -> Node -> Fay Node
-setAttr = ffi "(%3['setAttributeNS'](null,%1,%2) && null) || %3"
 
 byId :: String -> Fay Node
 byId = ffi "document['getElementById'](%1)"
@@ -55,11 +58,17 @@ firstChild = ffi "%1['firstChild']"
 lastChild :: Node -> Fay Node
 lastChild = ffi "%1['lastChild']"
 
-attrNum :: String -> Node -> Fay Double
-attrNum = ffi "%2['getAttributeNS'](null,%1)"
+attributeN :: String -> Node -> Fay Double
+attributeN = ffi "%2['getAttributeNS'](null,%1)"
 
-attrStr :: String -> Node -> Fay String
-attrStr = ffi "%2['getAttributeNS'](null,%1)"
+attr :: String -> Node -> Fay String
+attr = ffi "%2['getAttributeNS'](null,%1)"
+
+property :: String -> Node -> Fay String
+property = ffi "%2['%1']"
+
+propertyN :: String -> Node -> Fay Double
+propertyN = ffi "%2['%1']"
 
 toLower :: String -> String
 toLower = ffi "String(%1)['toLowerCase']()"
@@ -69,8 +78,9 @@ color (r, g, b) = "rgb(" ++ show r ++ "," ++ show g ++ "," ++ show b ++ ")"
 
 insertNS :: String -> Markup -> Node -> Fay Node
 insertNS s m n = foldM go n (reverse m)
-    where go n (Attribute k v) = setAttr k v n
+    where go n (Attribute k v) = setAttribute k v n
           go n (Element t)     = nodeNS s t >>= setParent n
           go n (Complete)      = parent n
+          go n (Property k v)  = setProperty k v n
           go n (Content v)     = content v >>= setParent n >> return n
 

@@ -71,6 +71,11 @@ dataA = Attribute "data"
 defaultA :: String -> Primitive
 defaultA = Attribute "default"
 
+-- Convenience Properties
+
+inner :: String -> Primitive
+inner = Property "innerHTML"
+
 -- Boolean Attributes
 -- in the w3c sense of boolean -- not true or false, rather present or not
 
