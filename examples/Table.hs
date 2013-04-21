@@ -10,7 +10,7 @@ import Cinder.HTML.Attributes
 colors = go [ (r,g,b) | r <- s, g <- s, b <- s]
     where s = [0, 0x33 .. 0xff]
           go [] = []
-          go xs = map color (take 24 xs) : go (drop 24 xs)
+          go xs = map rgb (take 24 xs) : go (drop 24 xs)
 
 tableMU = markup ! table !+ foldl1 (!+) (map row colors) ! Complete
     where row x = markup ! tr !+ foldl1 (!+) (map box x) ! Complete

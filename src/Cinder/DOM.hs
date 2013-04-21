@@ -73,8 +73,12 @@ propertyN = ffi "%2['%1']"
 toLower :: String -> String
 toLower = ffi "String(%1)['toLowerCase']()"
 
-color :: (Int, Int, Int) -> String
-color (r, g, b) = "rgb(" ++ show r ++ "," ++ show g ++ "," ++ show b ++ ")"
+rgb :: (Int, Int, Int) -> String
+rgb (r, g, b) = "rgb(" ++ show r ++ "," ++ show g ++ "," ++ show b ++ ")"
+
+rgba :: (Int, Int, Int, Int) -> String
+rgba (r, g, b, a) = "rgba(" ++ show r ++ "," ++ show g ++ "," ++ show b
+                    ++ "," ++ show a ++ ")"
 
 insertNS :: String -> Markup -> Node -> Fay Node
 insertNS s m n = foldM go n (reverse m)
