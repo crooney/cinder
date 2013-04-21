@@ -48,11 +48,13 @@
         <section id="main_content" class="inner">
 <h2 id="html-table">HTML Table</h2>
 <p>The table at the bottom of the page (Welcome to 1997!) was created on the fly by the following Fay:</p>
-<pre class="sourceCode haskell"><code class="sourceCode haskell">colors <span class="fu">=</span> go [ (r,g,b) <span class="fu">|</span> r <span class="ot">&lt;-</span> s, g <span class="ot">&lt;-</span> s, b <span class="ot">&lt;-</span> s]
+<pre class="sourceCode haskell"><code class="sourceCode haskell"><span class="ot">colors ::</span> [[<span class="dt">String</span>]]
+colors <span class="fu">=</span> go [ (r,g,b) <span class="fu">|</span> r <span class="ot">&lt;-</span> s, g <span class="ot">&lt;-</span> s, b <span class="ot">&lt;-</span> s]
     <span class="kw">where</span> s <span class="fu">=</span> [<span class="dv">0</span>, <span class="dv">0x33</span> <span class="fu">..</span> <span class="dv">0xff</span>]
           go [] <span class="fu">=</span> []
           go xs <span class="fu">=</span> <span class="fu">map</span> rgb (<span class="fu">take</span> <span class="dv">24</span> xs) <span class="fu">:</span> go (<span class="fu">drop</span> <span class="dv">24</span> xs)
 
+<span class="ot">tableMU ::</span> <span class="dt">Markup</span>
 tableMU <span class="fu">=</span> markup <span class="fu">!</span> table <span class="fu">!+</span> <span class="fu">foldl1</span> (<span class="fu">!+</span>) (<span class="fu">map</span> row colors) <span class="fu">!</span> <span class="dt">Complete</span>
     <span class="kw">where</span> row x <span class="fu">=</span> markup <span class="fu">!</span> tr <span class="fu">!+</span> <span class="fu">foldl1</span> (<span class="fu">!+</span>) (<span class="fu">map</span> box x) <span class="fu">!</span> <span class="dt">Complete</span>
           box x <span class="fu">=</span> markup <span class="fu">!</span> td <span class="fu">!</span> sty x <span class="fu">!</span> inner <span class="st">&quot;&amp;#955;&quot;</span> <span class="fu">!</span> <span class="dt">Complete</span>

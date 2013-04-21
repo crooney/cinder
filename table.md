@@ -3,11 +3,13 @@
 The table at the bottom of the page (Welcome to 1997!) was created on the fly by the following Fay:
 
 ````haskell
+colors :: [[String]]
 colors = go [ (r,g,b) | r <- s, g <- s, b <- s]
     where s = [0, 0x33 .. 0xff]
           go [] = []
           go xs = map rgb (take 24 xs) : go (drop 24 xs)
 
+tableMU :: Markup
 tableMU = markup ! table !+ foldl1 (!+) (map row colors) ! Complete
     where row x = markup ! tr !+ foldl1 (!+) (map box x) ! Complete
           box x = markup ! td ! sty x ! inner "&#955;" ! Complete
