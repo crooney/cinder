@@ -32,12 +32,12 @@ First a `g` (group) SVG node is created and four circles of pleasing colors adde
 along with animations of their radii and y coordinates, with only duration and repeat count specified.
 Note the second call to `aADR` follows a `!<+` which closes the previous one.
 The circles are then taken from the DOM into a list and their x coordinates staggered.
-Next previously unspecified portions of the animations, (time, splice, and value arrays)
+Next previously unspecified portions of the animations (time, splice, and value arrays),
 are inserted directly into their respective `animate` nodes via `zipInsert`.
 Their start times are staggered, and the `g` node containing the whole shmear inserted
-into the document root, and happy animation obtains. 
+into the document root, and happy animation obtains.
 
-It may be edifying to look at the DOM in Firebug or Developer tools.
+It may be edifying to look at the DOM in Firebug or Developer Tools.
 
 Note that the use of the grouping node is only necessary for Chromium, which I
 believe has a bug.  This is the same thing that affects the trace example, but
