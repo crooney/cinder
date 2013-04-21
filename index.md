@@ -1,6 +1,9 @@
 These pages only exist as a place to host the examples.  What follows on this page
 is only a (possibly out of date) copy of the project's README.
 
+Also, I don't have access to Windows or Apple boxes, and hence have no idea if
+any of this works in IE/Safari/whathaveyou.
+
 ## Cinder
 Cinder is a markup and DOM manipulation DSL for the excellent [Fay](http://fay-lang.org) subset of Haskell.
 

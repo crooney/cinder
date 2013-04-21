@@ -63,11 +63,11 @@ tableMU <span class="fu">=</span> markup <span class="fu">!</span> table <span c
 <span class="ot">htex ::</span> <span class="dt">Fay</span> ()
 htex <span class="fu">=</span> root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;body&quot;</span> <span class="fu">&gt;&gt;=</span> zipWithM_ insert [tableMU]</code></pre>
 <p><em>(If you don't understand the <code>!</code> and <code>!+</code> stuff, look at the SVG examples and the README. This example just demonstrates the applicability to HTML.)</em></p>
-<p>I won`t bother to explain the HTML or the Haskell to you, as, if you're reading this, you're probably more expert than I am at both.</p>
+<p>I won't bother to explain the HTML or the Haskell to you, as, if you're reading this, you're probably more expert than I am at both.</p>
 <p>The are only a few points of note as regards Cinder:</p>
 <ul>
-<li>The λ is injected via <code>inner</code>, which is a convenience for <code>Property &quot;innerHTML&quot;</code>, as opposed to just adding the lambda as content using <code>!:</code> or <code>Content</code>. <code>inner</code> will add the unescaped entity while <code>!:</code> would insert the string &quot;&amp;#955;&quot;.</li>
-<li><code>zipWithM_ insert</code> is used because <code>byTag</code> returns a <code>Node</code> list. Here, we bump our one element list of <code>Markup</code> against what we hope to be the only 'body' element. Note that <code>zipWithM_</code> is not in the (Fay) <code>Prelude</code>, but is provided in Cinder's <code>Control.Fay</code>.</li>
+<li>The λ is injected via <code>inner</code>, which is a convenience for <code>Property &quot;innerHTML&quot;</code>, as opposed to just adding the lambda as content using <code>!:</code> or <code>Content</code>. <code>inner</code> adds the unescaped entity while <code>!:</code> would insert the string &quot;&amp;#955;&quot;.<br><br></li>
+<li><code>zipWithM_ insert</code> is used because <code>byTag</code> returns a <code>Node</code> list. Here, we bump our one element list of <code>Markup</code> against what we hope to be the only 'body' element. Note that <code>zipWithM_</code> is not in the (Fay) <code>Prelude</code>, but is provided in Cinder's <code>Control.Fay</code>.<br><br></li>
 <li>The λ could have been injected into all the <code>td</code>s by several different methods, even after the initial <code>Markup</code> insertion, e.g.: <code>root &gt;&gt;= byTag &quot;td&quot; &gt;&gt;= mapM_ (setProperty &quot;innerHTML&quot; &quot;&amp;#955;&quot;)</code></li>
 </ul>
 <p>And, after the footer, behold our amazing technicolor dreamtable:</p>
