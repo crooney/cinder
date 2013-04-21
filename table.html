@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Cinder : Markup (HTML and SVG) and DOM manipulation DSL for the Fay subset of Haskell." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/code.css">
+
+    <title>Cinder</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/crooney/cinder">View on GitHub</a>
+
+          <h1 id="project_title">Cinder</h1>
+          <h2 id="project_tagline">Markup and DOM manipulation DSL for Fay</h2>
+
+          <ul id="nav" class="drop">
+              <li><a href="index.html">home</a></li>
+              <li><a href="#">examples</a>
+              <ul>
+                  <li><a href="morph.html">morph</a></li>
+                  <li><a href="trace.html">trace</a></li>
+                  <li><a href="bounce.html">bounce</a></li>
+                  <li><a href="graph.html">graph</a></li>
+                  <li><a href="table.html">table</a></li>
+              </ul>
+              </li>
+              <li><a href="https://github.com/crooney/cinder/wiki/Install">install</a></li>
+              <li><a href="https://github.com/crooney/cinder">code</a></li>
+          </ul>
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/crooney/cinder/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/crooney/cinder/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+        <section id="main_content" class="inner">
+<h2 id="html-table">HTML Table</h2>
+<p>The table at the bottom of the page (Welcome to 1997!) was created on the fly by the following Fay:</p>
+<pre class="sourceCode haskell"><code class="sourceCode haskell">colors <span class="fu">=</span> go [ (r,g,b) <span class="fu">|</span> r <span class="ot">&lt;-</span> s, g <span class="ot">&lt;-</span> s, b <span class="ot">&lt;-</span> s]
+    <span class="kw">where</span> s <span class="fu">=</span> [<span class="dv">0</span>, <span class="dv">0x33</span> <span class="fu">..</span> <span class="dv">0xff</span>]
+          go [] <span class="fu">=</span> []
+          go xs <span class="fu">=</span> <span class="fu">map</span> rgb (<span class="fu">take</span> <span class="dv">24</span> xs) <span class="fu">:</span> go (<span class="fu">drop</span> <span class="dv">24</span> xs)
+
+tableMU <span class="fu">=</span> markup <span class="fu">!</span> table <span class="fu">!+</span> <span class="fu">foldl1</span> (<span class="fu">!+</span>) (<span class="fu">map</span> row colors) <span class="fu">!</span> <span class="dt">Complete</span>
+    <span class="kw">where</span> row x <span class="fu">=</span> markup <span class="fu">!</span> tr <span class="fu">!+</span> <span class="fu">foldl1</span> (<span class="fu">!+</span>) (<span class="fu">map</span> box x) <span class="fu">!</span> <span class="dt">Complete</span>
+          box x <span class="fu">=</span> markup <span class="fu">!</span> td <span class="fu">!</span> sty x <span class="fu">!</span> inner <span class="st">&quot;&amp;#955;&quot;</span> <span class="fu">!</span> <span class="dt">Complete</span>
+          sty x <span class="fu">=</span> style (<span class="st">&quot;height:20px;width:20px;background-color:&quot;</span> <span class="fu">++</span> x)
+
+<span class="ot">htex ::</span> <span class="dt">Fay</span> ()
+htex <span class="fu">=</span> root <span class="fu">&gt;&gt;=</span> byTag <span class="st">&quot;body&quot;</span> <span class="fu">&gt;&gt;=</span> zipWithM_ insert [tableMU]</code></pre>
+<p><em>(If you don't understand the <code>!</code> and <code>!+</code> stuff, look at the SVG examples and the README. This example just demonstrates the applicability to HTML.)</em></p>
+<p>I won`t bother to explain the HTML or the Haskell to you, as, if you're reading this, you're probably more expert than I am at both.</p>
+<p>The are only a few points of note as regards Cinder:</p>
+<ul>
+<li>The λ is injected via <code>inner</code>, which is a convenience for <code>Property &quot;innerHTML&quot;</code>, as opposed to just adding the lambda as content using <code>!:</code> or <code>Content</code>. <code>inner</code> will add the unescaped entity while <code>!:</code> would insert the string &quot;&amp;#955;&quot;.</li>
+<li><code>zipWithM_ insert</code> is used because <code>byTag</code> returns a <code>Node</code> list. Here, we bump our known-to-be-one-element list of <code>Markup</code> against what we hope to be the only 'body' element. Note that <code>zipWithM_</code> is not in the (Fay) <code>Prelude</code>, but is provided in Cinder's <code>Control.Fay</code>.</li>
+<li>The λ could have been injected into all the <code>td</code>s by several different methods, even after the initial <code>Markup</code> insertion, e.g.: <code>root &gt;&gt;= byTag &quot;td&quot; &gt;&gt;= mapM_ (setProperty &quot;innerHTML&quot; &quot;&amp;#955;&quot;)</code></li>
+</ul>
+<p>And, after the footer, behold our amazing technicolor dreamtable:</p>
+<script src="examples/Table.js"></script>
+
+        </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Cinder maintained by <a href="https://github.com/crooney">crooney</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+
+  </body>
+</html>

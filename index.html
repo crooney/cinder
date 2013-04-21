@@ -30,6 +30,7 @@
                   <li><a href="trace.html">trace</a></li>
                   <li><a href="bounce.html">bounce</a></li>
                   <li><a href="graph.html">graph</a></li>
+                  <li><a href="table.html">table</a></li>
               </ul>
               </li>
               <li><a href="https://github.com/crooney/cinder/wiki/Install">install</a></li>
@@ -56,7 +57,7 @@
                     <span class="fu">!&lt;</span> p <span class="fu">!:</span> <span class="st">&quot;Visit Margarita!&quot;</span>
                         <span class="fu">!+&gt;</span> imgSA <span class="st">&quot;i.png&quot;</span> <span class="st">&quot;La Isla&quot;</span> <span class="fu">!</span> <span class="dt">Complete</span>
                 <span class="fu">!&lt;</span> <span class="dt">Complete</span></code></pre>
-<p>A single <code>!</code> (or <code>!&gt;</code>) signals that the following element or attribute is a child of the current element. <code>!:</code> signifies that content follows. <code>!</code> followed by the constructor <code>Complete</code> closes the current element and causes following markup to belong to the immediate parent. <code>!&lt;</code> is equivalent to <code>! Complete !</code>, that is, it closes the current element and takes starts right in on a sibling. As a special case <code>!&lt; Complete</code> closes all pending elements. So, in the example,the <code>h1</code> is closed by the <code>!&lt;</code> before <code>p</code>, the <code>img</code> closed explicitly and the <code>p</code> and <code>body</code> are closed by the <code>!&lt; Complete</code>. The <code>! Complete</code> after the <code>img</code> tag is superfluous, but harmless.</p>
+<p>A single <code>!</code> (or <code>!&gt;</code>) signals that the following element or attribute is a child of the current element. <code>!:</code> signifies that content follows. <code>!</code> followed by the constructor <code>Complete</code> closes the current element and causes following markup to belong to the immediate parent. <code>!&lt;</code> is equivalent to <code>! Complete !</code>, that is, it closes the current element and starts right in on a sibling. As a special case <code>!&lt; Complete</code> closes all pending elements. So, in the example,the <code>h1</code> is closed by the <code>!&lt;</code> before <code>p</code>, the <code>img</code> closed explicitly and the <code>p</code> and <code>body</code> are closed by the <code>!&lt; Complete</code>. The <code>! Complete</code> after the <code>img</code> tag is superfluous, but harmless.</p>
 <p>Further, complete sections of markup may be added by <code>!+</code> (or <code>!+&lt;</code> or <code>!+&gt;</code>). Convenience functions are available to add complete tags with commonly used attributes in this manner. For instance <code>imgSA &quot;i.png&quot; &quot;La Isla&quot;</code> is exactly equivalent to <code>markup ! img ! src &quot;i.png&quot; ! alt &quot;La Isla&quot;</code>.</p>
 <p>Attribute constructors which may reasonably expect numeric arguments may be postfixed by N as a convenience: <code>heightN 100</code> as opposed to <code>height (show 100)</code>.</p>
 <h3 id="dom">DOM</h3>
