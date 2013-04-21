@@ -65,7 +65,7 @@ htex <span class="fu">=</span> root <span class="fu">&gt;&gt;=</span> byTag <spa
 <p>The are only a few points of note as regards Cinder:</p>
 <ul>
 <li>The λ is injected via <code>inner</code>, which is a convenience for <code>Property &quot;innerHTML&quot;</code>, as opposed to just adding the lambda as content using <code>!:</code> or <code>Content</code>. <code>inner</code> will add the unescaped entity while <code>!:</code> would insert the string &quot;&amp;#955;&quot;.</li>
-<li><code>zipWithM_ insert</code> is used because <code>byTag</code> returns a <code>Node</code> list. Here, we bump our known-to-be-one-element list of <code>Markup</code> against what we hope to be the only 'body' element. Note that <code>zipWithM_</code> is not in the (Fay) <code>Prelude</code>, but is provided in Cinder's <code>Control.Fay</code>.</li>
+<li><code>zipWithM_ insert</code> is used because <code>byTag</code> returns a <code>Node</code> list. Here, we bump our one element list of <code>Markup</code> against what we hope to be the only 'body' element. Note that <code>zipWithM_</code> is not in the (Fay) <code>Prelude</code>, but is provided in Cinder's <code>Control.Fay</code>.</li>
 <li>The λ could have been injected into all the <code>td</code>s by several different methods, even after the initial <code>Markup</code> insertion, e.g.: <code>root &gt;&gt;= byTag &quot;td&quot; &gt;&gt;= mapM_ (setProperty &quot;innerHTML&quot; &quot;&amp;#955;&quot;)</code></li>
 </ul>
 <p>And, after the footer, behold our amazing technicolor dreamtable:</p>

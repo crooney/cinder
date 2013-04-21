@@ -30,7 +30,7 @@ The are only a few points of note as regards Cinder:
     as content using `!:` or `Content`. `inner` will add the unescaped entity while
     `!:` would insert the string "\&#955;".
   + `zipWithM_ insert` is used because `byTag` returns a `Node` list. Here, we bump our
-    known-to-be-one-element list of `Markup` against what we hope to be the only
+    one element list of `Markup` against what we hope to be the only
     'body' element. Note that `zipWithM_` is not in the (Fay) `Prelude`, but is
     provided in Cinder's `Control.Fay`.
   + The &#955; could have been injected into all the `td`s by several different
