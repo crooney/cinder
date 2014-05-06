@@ -2,13 +2,13 @@ module Cinder.SVG
     (module Cinder.SVG, module Cinder.DOM, module Cinder.DSL)
     where
 
-import Prelude hiding (min, max)
-import FFI
-import Control.Fay
-import Cinder.DSL
-import Cinder.DOM
-import Cinder.SVG.Attributes hiding (path)
-import Cinder.SVG.Elements
+import           Cinder.DOM
+import           Cinder.DSL
+import           Cinder.SVG.Attributes hiding (path)
+import           Cinder.SVG.Elements
+import           Control.Fay
+import           FFI
+import           Prelude               hiding (max, min)
 
 xmlns :: String
 xmlns = "http://www.w3.org/2000/svg"
@@ -199,8 +199,8 @@ slowDown = ksC "0 .2 .8 1"
 -- animate tracing path with current stroke for r repetitions of d duration
 -- l = path length. Pure func called from tracePath
 trace :: Double -> Double -> Double -> Markup
-trace d r l = markup ! strokeDashoffset (show l)
-              ! strokeDasharray (show l ++ "," ++ show l)
+trace d r l = markup ! strokeudashoffset (show l)
+              ! strokeudasharray (show l ++ "," ++ show l)
               !+ aADR "stroke-dashoffset" d r ! fill "freeze" !+ ftN l 0
 
 --non-pure SVG specific stuff (animations and namespaces, mostly)
