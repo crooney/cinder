@@ -1,9 +1,10 @@
+{-# LANGUAGE EmptyDataDecls #-}
 module Cinder.DOM (module Cinder.DOM, module Cinder.DSL) where
 
-import Prelude
-import FFI
-import Control.Fay (foldM)
-import Cinder.DSL
+import           Cinder.DSL
+import           Control.Fay (foldM)
+import           FFI
+import           Prelude
 
 data Node
 

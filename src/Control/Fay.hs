@@ -9,8 +9,8 @@ module Control.Fay
     )
     where
 
-import Prelude
-import FFI
+import           FFI
+import           Prelude hiding (mapM)
 
 ap :: Fay (a -> b) -> Fay a -> Fay b
 ap f x = f >>= \f' -> x >>= \x' -> return (f' x')

@@ -1,0 +1,44 @@
+name:                cinder
+version:             0.4
+synopsis:            HTML and SVG Manipulation library for Fay
+description:         HTML and SVG Manipulation library for Fay
+homepage:            https://github.com/crooney/cinder
+bug-reports:         https://github.com/crooney/cinder/issues
+license:             BSD3
+license-file:        LICENSE
+author:              Christopher Rooney
+copyright:           2013-2014 Christopher Rooney
+category:            Web, Fay
+build-type:          Simple
+cabal-version:       >=1.8
+extra-source-files:
+  LICENSE
+  README.md
+  CHANGELOG.md
+data-files: src/Cinder/DOM.hs
+            src/Cinder/SVG.hs
+            src/Cinder/HTML.hs
+            src/Cinder/HTML/Attributes.hs
+            src/Cinder/HTML/Elements.hs
+            src/Cinder/SVG/Attributes.hs
+            src/Cinder/SVG/Elements.hs
+            src/Cinder/DSL.hs
+
+source-repository head
+  type: git
+  location: https://github.com/crooney/cinder
+
+library
+  hs-source-dirs: src
+  exposed-modules: Cinder.DOM
+                   Cinder.SVG
+                   Cinder.HTML
+                   Cinder.HTML.Attributes
+                   Cinder.HTML.Elements
+                   Cinder.SVG.Attributes
+                   Cinder.SVG.Elements
+                   Cinder.DSL
+  ghc-options: -Wall
+  build-depends:
+    fay-base >= 0.19,
+    fay-text >= 0.3
