@@ -1,5 +1,5 @@
 name:                cinder
-version:             0.1
+version:             0.4
 synopsis:            HTML and SVG Manipulation library for Fay
 description:         HTML and SVG Manipulation library for Fay
 homepage:            https://github.com/crooney/cinder
@@ -7,7 +7,7 @@ bug-reports:         https://github.com/crooney/cinder/issues
 license:             BSD3
 license-file:        LICENSE
 author:              Christopher Rooney
-copyright:           2013 Christopher Rooney
+copyright:           2013-2014 Christopher Rooney
 category:            Web, Fay
 build-type:          Simple
 cabal-version:       >=1.8
