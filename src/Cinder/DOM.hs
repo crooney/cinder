@@ -1,20 +1,24 @@
-{-# LANGUAGE EmptyDataDecls #-}
+{-# LANGUAGE EmptyDataDecls    #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax  #-}
+
 module Cinder.DOM (module Cinder.DOM, module Cinder.DSL) where
 
 import           Cinder.DSL
 import           Control.Fay (foldM)
+import           Fay.Text    hiding (reverse)
 import           FFI
-import           Prelude
+import           Prelude     hiding (concat)
 
 data Node
 
 root :: Fay Node
 root = ffi "document['documentElement']"
 
-nodeNS :: String -> String -> Fay Node
+nodeNS :: Text -> Text -> Fay Node
 nodeNS = ffi "document['createElementNS'](%1,%2)"
 
-content :: String -> Fay Node
+content :: Text -> Fay Node
 content = ffi "document['createTextNode'](%1)"
 
 clone :: Bool -> Node -> Fay Node
@@ -26,10 +30,10 @@ setChild = ffi "(%2['appendChild'](%1) && null) || %2"
 setParent :: Node -> Node -> Fay Node
 setParent = ffi "(%1['appendChild'](%2) && null) || %2"
 
-setAttribute :: String -> String -> Node -> Fay Node
+setAttribute :: Text -> Text -> Node -> Fay Node
 setAttribute = ffi "(%3['setAttributeNS'](null,%1,%2) && null) || %3"
 
-setProperty :: String -> String -> Node -> Fay Node
+setProperty :: Text -> Text -> Node -> Fay Node
 setProperty = ffi "((%3[%1] = %2) && null) || %3"
 
 deleteSelf :: Node -> Fay ()
@@ -41,13 +45,13 @@ deleteChild = ffi "(%1['removeChild'](%2) && null) || %1"
 replace :: Node -> Node -> Fay Node
 replace = ffi "%1['parentNode']['replaceChild'](%2,%1) || %2"
 
-byId :: String -> Fay Node
+byId :: Text -> Fay Node
 byId = ffi "document['getElementById'](%1)"
 
-byTag :: String -> Node -> Fay [Node]
+byTag :: Text -> Node -> Fay [Node]
 byTag = ffi "%2['getElementsByTagName'](%1)"
 
-byClass :: String -> Node -> Fay [Node]
+byClass :: Text -> Node -> Fay [Node]
 byClass = ffi "%2['getElementsByClassName'](%1)"
 
 parent :: Node -> Fay Node
@@ -59,29 +63,31 @@ firstChild = ffi "%1['firstChild']"
 lastChild :: Node -> Fay Node
 lastChild = ffi "%1['lastChild']"
 
-attributeN :: String -> Node -> Fay Double
+attributeN :: Text -> Node -> Fay Double
 attributeN = ffi "%2['getAttributeNS'](null,%1)"
 
-attribute :: String -> Node -> Fay String
+attribute :: Text -> Node -> Fay Text
 attribute = ffi "%2['getAttributeNS'](null,%1)"
 
-property :: String -> Node -> Fay String
+property :: Text -> Node -> Fay Text
 property = ffi "%2['%1']"
 
-propertyN :: String -> Node -> Fay Double
+propertyN :: Text -> Node -> Fay Double
 propertyN = ffi "%2['%1']"
 
-toLower :: String -> String
+toLower :: Text -> Text
 toLower = ffi "String(%1)['toLowerCase']()"
 
-rgb :: (Int, Int, Int) -> String
-rgb (r, g, b) = "rgb(" ++ show r ++ "," ++ show g ++ "," ++ show b ++ ")"
+toText  = pack . show
 
-rgba :: (Int, Int, Int, Int) -> String
-rgba (r, g, b, a) = "rgba(" ++ show r ++ "," ++ show g ++ "," ++ show b
-                    ++ "," ++ show a ++ ")"
+rgb :: (Int, Int, Int) -> Text
+rgb (r, g, b) = concat ["rgb(" , toText r , "," , toText g , "," , toText b , ")"]
 
-insertNS :: String -> Markup -> Node -> Fay Node
+rgba :: (Int, Int, Int, Int) -> Text
+rgba (r, g, b, a) = concat ["rgba(" , toText r , "," , toText g , "," , toText b
+                    , "," , toText a , ")"]
+
+insertNS :: Text -> Markup -> Node -> Fay Node
 insertNS s m n = foldM go n (reverse m)
     where go n (Attribute k v) = setAttribute k v n
           go n (Element t)     = nodeNS s t >>= setParent n

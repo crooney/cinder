@@ -1,52 +1,55 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax  #-}
 module Cinder.HTML
     (module Cinder.HTML, module Cinder.DOM, module Cinder.DSL)
     where
 
-import Prelude hiding (min, max, div)
-import FFI
-import Cinder.DSL
-import Cinder.DOM
-import Cinder.HTML.Attributes
-import Cinder.HTML.Elements
+import           Cinder.DOM
+import           Cinder.DSL
+import           Cinder.HTML.Attributes
+import           Cinder.HTML.Elements
+import           Fay.Text
+import           FFI
+import           Prelude                hiding (div, max, min)
 
-xmlns :: String
+xmlns :: Text
 xmlns = "http://www.w3.org/1999/xhtml"
 
 -- Various convenience funcs
 
-imgS :: String -> Markup
+imgS :: Text -> Markup
 imgS = (markup ! img !) . src
 
-imgSA :: String -> String -> Markup
+imgSA :: Text -> Text -> Markup
 imgSA s a = imgS s ! alt a
 
 -- e = Element, C = class, X = Content, I = id
 
-eX :: Primitive -> String -> Markup
+eX :: Primitive -> Text -> Markup
 eX e c = markup ! e !: c
 
-eCX :: Primitive -> String -> String -> Markup
+eCX :: Primitive -> Text -> Text -> Markup
 eCX e cl c = eX e c ! classA cl
 
-dX :: String -> Markup
+dX :: Text -> Markup
 dX = eX div
 
-dCX :: String -> String -> Markup
+dCX :: Text -> Text -> Markup
 dCX = eCX div
 
-pX :: String -> Markup
+pX :: Text -> Markup
 pX = eX p
 
-pCX :: String -> String -> Markup
+pCX :: Text -> Text -> Markup
 pCX = eCX p
 
-iX :: String -> Markup
+iX :: Text -> Markup
 iX = eX i
 
-bX :: String -> Markup
+bX :: Text -> Markup
 bX = eX b
 
-strongX :: String -> Markup
+strongX :: Text -> Markup
 strongX = eX strong
 
 -- non-pure HTML specific stuff
@@ -59,21 +62,21 @@ node = nodeNS xmlns
 
 -- attributes whose names conflict with keywords
 
-classA :: String -> Primitive
+classA :: Text -> Primitive
 classA = Attribute "class"
 
-typeA :: String -> Primitive
+typeA :: Text -> Primitive
 typeA = Attribute "type"
 
-dataA :: String -> Primitive
+dataA :: Text -> Primitive
 dataA = Attribute "data"
 
-defaultA :: String -> Primitive
+defaultA :: Text -> Primitive
 defaultA = Attribute "default"
 
 -- Convenience Properties
 
-inner :: String -> Primitive
+inner :: Text -> Primitive
 inner = Property "innerHTML"
 
 -- Boolean Attributes

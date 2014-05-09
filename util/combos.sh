@@ -11,21 +11,27 @@ DIR="../src/Cinder/${i}/"
 
 mkdir -p $DIR
 
-echo "module Cinder.${i}.Attributes where
-import Cinder.DSL
+echo "{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax  #-}
 
+module Cinder.${i}.Attributes where
+import Cinder.DSL
+import Fay.Text
 " \
 	>$DIR/Attributes.hs
 
 cat "${i}attributes.txt" | sort | uniq | sed 'h;s/[-:]\(.\)/\u\1/g;G' \
-	| sed -n 'N;s/\(.*\)\n\(.*\)/\1 :: String -> Primitive\
+	| sed -n 'N;s/\(.*\)\n\(.*\)/\1 :: Text -> Primitive\
 \1 = Attribute "\2"\
 /p;' \
 	>>$DIR/Attributes.hs
 
-echo "module Cinder.${i}.Elements where
-import Cinder.DSL
+echo "{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax  #-}
 
+module Cinder.${i}.Elements where 
+import Cinder.DSL
+import Fay.Text
 " \
 	>$DIR/Elements.hs
 
