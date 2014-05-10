@@ -21,6 +21,8 @@ module Cinder.DSL
     ,DString
     ,atN
     ,atP
+    ,pr
+    ,prN
     ) where
 
 import           Fay.Text hiding (reverse)

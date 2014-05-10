@@ -78,6 +78,7 @@ propertyN = ffi "%2['%1']"
 toLower :: Text -> Text
 toLower = ffi "String(%1)['toLowerCase']()"
 
+toText :: Automatic a -> Text
 toText  = pack . show
 
 rgb :: (Int, Int, Int) -> Text
@@ -88,7 +89,7 @@ rgba (r, g, b, a) = concat ["rgba(" , toText r , "," , toText g , "," , toText b
                     , "," , toText a , ")"]
 
 insertNS :: Text -> Markup -> Node -> Fay Node
-insertNS s m n = foldM go n (reverse m)
+insertNS s m node = foldM go node (reverse m)
     where go n (Attribute k v) = setAttribute k v n
           go n (Element t)     = nodeNS s t >>= setParent n
           go n (Complete)      = parent n

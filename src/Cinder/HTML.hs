@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RebindableSyntax  #-}
+
 module Cinder.HTML
     (module Cinder.HTML, module Cinder.DOM, module Cinder.DSL)
     where
@@ -10,7 +11,7 @@ import           Cinder.HTML.Attributes
 import           Cinder.HTML.Elements
 import           Fay.Text
 import           FFI
-import           Prelude                hiding (div, max, min)
+import           Prelude                as P hiding (div, max, min)
 
 xmlns :: Text
 xmlns = "http://www.w3.org/1999/xhtml"
@@ -21,7 +22,7 @@ imgS :: Text -> Markup
 imgS = (markup ! img !) . src
 
 imgSA :: Text -> Text -> Markup
-imgSA s a = imgS s ! alt a
+imgSA srcUri altern = imgS srcUri ! alt altern
 
 -- e = Element, C = class, X = Content, I = id
 
@@ -154,62 +155,62 @@ typemustmatchB = Attribute "typemustmatch" ""
 -- (possibly) numeric attributes
 
 colsN :: a -> Primitive
-colsN = Attribute "cols" . show
+colsN = Attribute "cols" . toText
 
 colspanN :: a -> Primitive
-colspanN = Attribute "colspan" . show
+colspanN = Attribute "colspan" . toText
 
 coordsN :: a -> Primitive
-coordsN = Attribute "coords" . show
+coordsN = Attribute "coords" . toText
 
 datetimeN :: a -> Primitive
-datetimeN = Attribute "datetime" . show
+datetimeN = Attribute "datetime" . toText
 
 heightN :: a -> Primitive
-heightN = Attribute "height" . show
+heightN = Attribute "height" . toText
 
 highN :: a -> Primitive
-highN = Attribute "high" . show
+highN = Attribute "high" . toText
 
 lowN :: a -> Primitive
-lowN = Attribute "low" . show
+lowN = Attribute "low" . toText
 
 maxN :: a -> Primitive
-maxN = Attribute "max" . show
+maxN = Attribute "max" . toText
 
 maxlengthN :: a -> Primitive
-maxlengthN = Attribute "maxlength" . show
+maxlengthN = Attribute "maxlength" . toText
 
 minN :: a -> Primitive
-minN = Attribute "min" . show
+minN = Attribute "min" . toText
 
 optimumN :: a -> Primitive
-optimumN = Attribute "optimum" . show
+optimumN = Attribute "optimum" . toText
 
 rowsN :: a -> Primitive
-rowsN = Attribute "rows" . show
+rowsN = Attribute "rows" . toText
 
 rowspanN :: a -> Primitive
-rowspanN = Attribute "rowspan" . show
+rowspanN = Attribute "rowspan" . toText
 
 sizeN :: a -> Primitive
-sizeN = Attribute "size" . show
+sizeN = Attribute "size" . toText
 
 spanN :: a -> Primitive
-spanN = Attribute "span" . show
+spanN = Attribute "span" . toText
 
 startN :: a -> Primitive
-startN = Attribute "start" . show
+startN = Attribute "start" . toText
 
 stepN :: a -> Primitive
-stepN = Attribute "step" . show
+stepN = Attribute "step" . toText
 
 tabindexN :: a -> Primitive
-tabindexN = Attribute "tabindex" . show
+tabindexN = Attribute "tabindex" . toText
 
 valueN :: a -> Primitive
-valueN = Attribute "value" . show
+valueN = Attribute "value" . toText
 
 widthN :: a -> Primitive
-widthN = Attribute "width" . show
+widthN = Attribute "width" . toText
 

@@ -14,7 +14,7 @@ import           Control.Fay
 import           Fay.Text
 import           FFI
 import           Prelude               as P hiding (concat, concatMap,
-                                             intercalate, max, min, toLower)
+                                             intercalate, max, min)
 
 xmlns :: Text
 xmlns = "http://www.w3.org/2000/svg"
