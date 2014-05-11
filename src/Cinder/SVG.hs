@@ -8,8 +8,8 @@ module Cinder.SVG
 
 import           Cinder.DOM            hiding (toLower)
 import           Cinder.DSL
-import           Cinder.SVG.Attributes hiding (path)
-import           Cinder.SVG.Elements
+import           Cinder.SVG.Attributes as A hiding (path, r, rx, ry, x, y, z)
+import           Cinder.SVG.Elements   as E hiding (a)
 import           Control.Fay
 import           Fay.Text
 import           FFI
@@ -72,10 +72,10 @@ showDRelative :: [Seg] -> Text
 showDRelative = toLower . showD
 
 dS :: [Seg] -> Primitive
-dS = d . showD
+dS = A.d . showD
 
 dSR :: [Seg] -> Primitive
-dSR = d . showDRelative
+dSR = A.d . showDRelative
 
 pathD :: [Seg] -> Markup
 pathD = (markup ! path !) . dS
@@ -114,7 +114,7 @@ setATB a t b = markup ! set ! attributeName a ! to t ! beginN b
 
 -- D = dur, R = repeatCount
 animationADR :: Text -> a -> Double -> Markup
-animationADR a d r = markup ! attributeName a ! durN d ! repeatCount (go r)
+animationADR a duration r = markup ! attributeName a ! durN duration ! repeatCount (go r)
                      where go x | x > 0 = toText x
                            go _         = "indefinite"
 
@@ -122,7 +122,7 @@ aADR :: Text -> a -> Double -> Markup
 aADR = (((markup ! animate !+) .) .) . animationADR
 
 atDRT :: a -> Double -> [Transform] -> Markup
-atDRT d r ts = markup ! animateTransform !+ animationADR "transform" d r
+atDRT duration r ts = markup ! animateTransform !+ animationADR "transform" duration r
                ! at "type" (transformType $ P.head ts) ! vs (P.map transformVals ts)
 
 beIndef :: Markup
@@ -165,15 +165,15 @@ iscN = isc . P.map toText
 -- Helper func for bounce and settle, which see
 bounceFX :: (Double -> Int -> Double -> Double -> [Double]) ->
     Double -> Int -> Double -> Double -> Markup
-bounceFX kv b nb f t = markup ! ts b nb !+ ss nb ! vsN (kv b nb f t ++ [t])
+bounceFX kv bo num f t = markup ! ts bo num !+ ss num ! vsN (kv bo num f t ++ [t])
     where ts b nb = keyTimes $ iscN $ 0 : (take (nb * 2)
                  [(1-b),((1-b) + b / fromIntegral (2*nb)) ..] ++ [1])
           ss x = ksC $ isc $ "0 0 1 1" : replicate x "0 .75 .25 1; 1 .75 .25 0"
 
--- animate attribute such that it returns b percent of way to original
--- and repeat nb times. f = original t = final (from, to)
+-- animate attribute such that it returns frac percent of way to original
+-- and repeat cnt times. f = original t = final (from, to)
 bounce :: Double -> Int -> Double -> Double -> Markup
-bounce b nb f t = bounceFX kv b nb f t
+bounce frac cnt begPos endPos = bounceFX kv frac cnt begPos endPos
     where kv b nb f t = P.intersperse t $ P.take (nb+1) (P.map (t-)
                             $ iterate (*b) (t-f))
 
@@ -204,9 +204,9 @@ slowDown = ksC "0 .2 .8 1"
 -- animate tracing path with current stroke for r repetitions of d duration
 -- l = path length. Pure func called from tracePath
 trace :: Double -> Double -> Double -> Markup
-trace d r l = markup ! strokeudashoffset (toText l)
+trace duration r l = markup ! strokeudashoffset (toText l)
               ! strokeudasharray (concat [ toText l, "," ,toText l])
-              !+ aADR "stroke-dashoffset" d r ! fill "freeze" !+ ftN l 0
+              !+ aADR "stroke-dashoffset" duration r ! fill "freeze" !+ ftN l 0
 
 --non-pure SVG specific stuff (animations and namespaces, mostly)
 
@@ -241,9 +241,9 @@ totalLength = ffi "%1['getTotalLength']()"
 -- animate tracing path with current stroke for r repetitions of d duration
 -- impure because path length must be determined
 tracePath :: Double -> Double -> Node -> Fay Node
-tracePath d r n = do l <- totalLength n
-                     insert (trace d r l) n
-                     lastChild n
+tracePath duration r n = do l <- totalLength n
+                            _ <- insert (trace duration r l) n
+                            lastChild n
 
 -- values for attributes whose values might be animated
 
