@@ -1,16 +1,22 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax  #-}
+
 module Cinder.SVG
     (module Cinder.SVG, module Cinder.DOM, module Cinder.DSL)
     where
 
-import           Cinder.DOM
+import           Cinder.DOM            hiding (toLower)
 import           Cinder.DSL
-import           Cinder.SVG.Attributes hiding (path)
-import           Cinder.SVG.Elements
+import           Cinder.SVG.Attributes as A hiding (path, r, rx, ry, x, y, z)
+import           Cinder.SVG.Elements   as E hiding (a)
 import           Control.Fay
+import           Fay.Text
 import           FFI
-import           Prelude               hiding (max, min)
+import           Prelude               as P hiding (concat, concatMap,
+                                             intercalate, max, min)
 
-xmlns :: String
+xmlns :: Text
 xmlns = "http://www.w3.org/2000/svg"
 
 -- convenience methods for simple shapes
@@ -58,19 +64,18 @@ data Seg = M Double Double
          | Q Double Double Double Double
          | T Double Double
          | Z
-    deriving Show
 
-showD :: [Seg] -> String
-showD = concatMap hShow
+showD :: [Seg] -> Text
+showD = concat . P.map hShow
 
-showDRelative :: [Seg] -> String
+showDRelative :: [Seg] -> Text
 showDRelative = toLower . showD
 
 dS :: [Seg] -> Primitive
-dS = d . showD
+dS = A.d . showD
 
 dSR :: [Seg] -> Primitive
-dSR = d . showDRelative
+dSR = A.d . showDRelative
 
 pathD :: [Seg] -> Markup
 pathD = (markup ! path !) . dS
@@ -85,96 +90,96 @@ data Transform = Translate Double Double
                | Scale Double
                | Scale2d Double Double
 
-transformType :: Transform -> String
+transformType :: Transform -> Text
 transformType Translate {} = "translate"
 transformType Rotate {}    = "rotate"
 transformType Scale {}     = "scale"
 transformType Scale2d {}   = "scale"
 
-transformVals :: Transform -> String
-transformVals (Translate x y) = show x ++ "," ++ show y
-transformVals (Rotate x y z)  = show x ++ "," ++ show y ++ "," ++ show z
-transformVals (Scale x)       = show x
-transformVals (Scale2d x y)   = show x ++ "," ++ show y
+transformVals :: Transform -> Text
+transformVals (Translate x y) = concat [ toText x , "," , toText y ]
+transformVals (Rotate x y z)  = concat [ toText x , "," , toText y , "," , toText z ]
+transformVals (Scale x)       = toText x
+transformVals (Scale2d x y)   = concat [ toText x , "," , toText y ]
 
 transformT :: [Transform] -> Primitive
-transformT = transform . intercalate "," . map go
-    where go t = transformType t ++ "(" ++ transformVals t ++ ")"
+transformT = transform . intercalate "," . P.map go
+    where go t = concat [ transformType t , "(" , transformVals t ,  ")" ]
 
 -- animation stuff
 
 -- A = attributeName, T = to, B = begin
-setATB :: String -> String -> a -> Markup
+setATB :: Text -> Text -> a -> Markup
 setATB a t b = markup ! set ! attributeName a ! to t ! beginN b
 
 -- D = dur, R = repeatCount
-animationADR :: String -> a -> Double -> Markup
-animationADR a d r = markup ! attributeName a ! durN d ! repeatCount (go r)
-                     where go x | x > 0 = show x
+animationADR :: Text -> a -> Double -> Markup
+animationADR a duration r = markup ! attributeName a ! durN duration ! repeatCount (go r)
+                     where go x | x > 0 = toText x
                            go _         = "indefinite"
 
-aADR :: String -> a -> Double -> Markup
+aADR :: Text -> a -> Double -> Markup
 aADR = (((markup ! animate !+) .) .) . animationADR
 
 atDRT :: a -> Double -> [Transform] -> Markup
-atDRT d r ts = markup ! animateTransform !+ animationADR "transform" d r
-               ! at "type" (transformType $ head ts) ! vs (map transformVals ts)
+atDRT duration r ts = markup ! animateTransform !+ animationADR "transform" duration r
+               ! at "type" (transformType $ P.head ts) ! vs (P.map transformVals ts)
 
 beIndef :: Markup
 beIndef = markup ! begin "indefinite" ! end "indefinite"
 
 -- f = from, t = to
-ft :: String -> String -> Markup
+ft :: Text -> Text -> Markup
 ft f t = markup ! from f ! to t
 
 ftN :: a -> a -> Markup
 ftN f t = markup ! fromN f ! toN t
 
 -- turn list into SVG style values list
-vs :: [String] -> Primitive
+vs :: [Text] -> Primitive
 vs = values . isc
 
 vsN :: [a] -> Primitive
-vsN = vs . map show
+vsN = vs . P.map toText
 
-ksC :: String -> Markup
+ksC :: Text -> Markup
 ksC = (markup ! calcMode "spline" !) . keySplines
 
-pc :: a -> String
-pc = (++"%") . show
+pc :: a -> Text
+pc x  = concat [ toText x, "%" ]
 
 -- slip in semicolon
-isc :: [String] -> String
+isc :: [Text] -> Text
 isc = intercalate ";"
 
-iscN :: [a] -> String
-iscN = isc . map show
+iscN :: [a] -> Text
+iscN = isc . P.map toText
 
 -- draw equilateral polygons n = number of sides, r = distance from center
 -- to vertex
-ngon :: Double -> Double -> Double -> Double -> [Seg]
-ngon n x y r = go M 0 : map (go L) [1 .. n - 1] ++ [Z]
-    where go f i = f (x + r * cos (c * i)) (y + r * sin (c * i))
-          c = 2.0 * pi / n
+-- ngon :: Double -> Double -> Double -> Double -> [Seg]
+-- ngon n x y r = go M 0 : map (go L) [1 .. n - 1] ++ [Z]
+--     where go f i = f (x + r * cos (c * i)) (y + r * sin (c * i))
+--           c = 2.0 * pi / n
 
--- helper func for bounce and settle, which see
+-- Helper func for bounce and settle, which see
 bounceFX :: (Double -> Int -> Double -> Double -> [Double]) ->
     Double -> Int -> Double -> Double -> Markup
-bounceFX kv b nb f t = markup ! ts b nb !+ ss nb ! vsN (kv b nb f t ++ [t])
+bounceFX kv bo num f t = markup ! ts bo num !+ ss num ! vsN (kv bo num f t ++ [t])
     where ts b nb = keyTimes $ iscN $ 0 : (take (nb * 2)
                  [(1-b),((1-b) + b / fromIntegral (2*nb)) ..] ++ [1])
           ss x = ksC $ isc $ "0 0 1 1" : replicate x "0 .75 .25 1; 1 .75 .25 0"
 
--- animate attribute such that it returns b percent of way to original
--- and repeat nb times. f = original t = final (from, to)
+-- animate attribute such that it returns frac percent of way to original
+-- and repeat cnt times. f = original t = final (from, to)
 bounce :: Double -> Int -> Double -> Double -> Markup
-bounce b nb f t = bounceFX kv b nb f t
-    where kv b nb f t = intersperse t $ take (nb+1) (map (t-)
+bounce frac cnt begPos endPos = bounceFX kv frac cnt begPos endPos
+    where kv b nb f t = P.intersperse t $ P.take (nb+1) (P.map (t-)
                             $ iterate (*b) (t-f))
 
 -- overshoot and return repeatedly, like bounce
 settle :: Double -> Int -> Double -> Double -> Markup
-settle b nb f t = bounceFX kv b nb f t
+settle = bounceFX kv
     where kv b nb f t = f : take (nb*2) (zipWith ($) (cycle [(t+),(t-)])
                                              (iterate (*b) (b*(t-f))))
 
@@ -199,9 +204,9 @@ slowDown = ksC "0 .2 .8 1"
 -- animate tracing path with current stroke for r repetitions of d duration
 -- l = path length. Pure func called from tracePath
 trace :: Double -> Double -> Double -> Markup
-trace d r l = markup ! strokeudashoffset (show l)
-              ! strokeudasharray (show l ++ "," ++ show l)
-              !+ aADR "stroke-dashoffset" d r ! fill "freeze" !+ ftN l 0
+trace duration r l = markup ! strokeudashoffset (toText l)
+              ! strokeudasharray (concat [ toText l, "," ,toText l])
+              !+ aADR "stroke-dashoffset" duration r ! fill "freeze" !+ ftN l 0
 
 --non-pure SVG specific stuff (animations and namespaces, mostly)
 
@@ -225,9 +230,9 @@ zipInsert = zipWithM insert
 
 -- stagger an a attribute starting with s and incrementing i across list of
 -- Nodes
-stagger :: String -> Double -> Double -> [Node] -> Fay [Node]
-stagger a s i = zipInsert $ map go [s, s + i ..]
-        where go x = markup ! Attribute a (show x)
+stagger :: Text -> Double -> Double -> [Node] -> Fay [Node]
+stagger a s i = zipInsert $ P.map go [s, s + i ..]
+        where go x = markup ! Attribute a (toText x)
 
 -- get length of all segments of path node
 totalLength :: Node -> Fay Double
@@ -236,22 +241,22 @@ totalLength = ffi "%1['getTotalLength']()"
 -- animate tracing path with current stroke for r repetitions of d duration
 -- impure because path length must be determined
 tracePath :: Double -> Double -> Node -> Fay Node
-tracePath d r n = do l <- totalLength n
-                     insert (trace d r l) n
-                     lastChild n
+tracePath duration r n = do l <- totalLength n
+                            _ <- insert (trace duration r l) n
+                            lastChild n
 
 -- values for attributes whose values might be animated
 
-baseVal :: String -> Node -> Fay String
+baseVal :: Text -> Node -> Fay Text
 baseVal = ffi "%2['%1']['baseVal']"
 
-baseValN :: String -> Node -> Fay Double
+baseValN :: Text -> Node -> Fay Double
 baseValN = ffi "%2['%1']['baseVal']"
 
-animVal :: String -> Node -> Fay String
+animVal :: Text -> Node -> Fay Text
 animVal = ffi "%2['%1']['animVal']"
 
-animValN :: String -> Node -> Fay Double
+animValN :: Text -> Node -> Fay Double
 animValN = ffi "%2['%1']['animVal']"
 
 -- global pause and unpause animations
@@ -263,162 +268,162 @@ unpauseAll :: Fay ()
 unpauseAll = ffi "document['documentElement']['unpauseAnimations']()"
 
 -- attributes whose names conflict with keywords
-classA :: String -> Primitive
+classA :: Text -> Primitive
 classA = Attribute "class"
 
-typeA :: String -> Primitive
+typeA :: Text -> Primitive
 typeA = Attribute "type"
 
-inA :: String -> Primitive
+inA :: Text -> Primitive
 inA = Attribute "in"
 
 -- HACK!!! to mimic Haskell's show instead of getting JSON
 
-inst :: Automatic a -> String
+inst :: Automatic a -> Text
 inst = ffi "%1['instance'] + ' '"
 
-slot :: Int -> Automatic a -> String
+slot :: Int -> Automatic a -> Text
 slot = ffi "(%2['slot'+%1] != null && (%2['slot'+%1] + ' ')) || ''"
 
-hShow :: Automatic a -> String
-hShow x = inst x ++ concatMap (`slot` x) [1 .. 8]
+hShow :: Automatic a -> Text
+hShow x = concat $ inst x : P.map (`slot` x) [1 .. 8]
 
 -- (possibly) numeric attributes
 
 beginN :: a -> Primitive
-beginN = Attribute "begin" . show
+beginN = Attribute "begin" . toText
 
 cxN :: a -> Primitive
-cxN = Attribute "cx" . show
+cxN = Attribute "cx" . toText
 
 cyN :: a -> Primitive
-cyN = Attribute "cy" . show
+cyN = Attribute "cy" . toText
 
 divisorN :: a -> Primitive
-divisorN = Attribute "divisor" . show
+divisorN = Attribute "divisor" . toText
 
 durN :: a -> Primitive
-durN = Attribute "dur" . show
+durN = Attribute "dur" . toText
 
 dxN :: a -> Primitive
-dxN = Attribute "dx" . show
+dxN = Attribute "dx" . toText
 
 dyN :: a -> Primitive
-dyN = Attribute "dy" . show
+dyN = Attribute "dy" . toText
 
 elevationN :: a -> Primitive
-elevationN = Attribute "elevation" . show
+elevationN = Attribute "elevation" . toText
 
 endN :: a -> Primitive
-endN = Attribute "end" . show
+endN = Attribute "end" . toText
 
 exponentN :: a -> Primitive
-exponentN = Attribute "exponent" . show
+exponentN = Attribute "exponent" . toText
 
 fromN :: a -> Primitive
-fromN = Attribute "from" . show
+fromN = Attribute "from" . toText
 
 fxN :: a -> Primitive
-fxN = Attribute "fx" . show
+fxN = Attribute "fx" . toText
 
 fyN :: a -> Primitive
-fyN = Attribute "fy" . show
+fyN = Attribute "fy" . toText
 
 heightN :: a -> Primitive
-heightN = Attribute "height" . show
+heightN = Attribute "height" . toText
 
 interceptN :: a -> Primitive
-interceptN = Attribute "intercept" . show
+interceptN = Attribute "intercept" . toText
 
 kN :: a -> Primitive
-kN = Attribute "k" . show
+kN = Attribute "k" . toText
 
 lengthAdjustN :: a -> Primitive
-lengthAdjustN = Attribute "lengthAdjust" . show
+lengthAdjustN = Attribute "lengthAdjust" . toText
 
 maxN :: a -> Primitive
-maxN = Attribute "max" . show
+maxN = Attribute "max" . toText
 
 minN :: a -> Primitive
-minN = Attribute "min" . show
+minN = Attribute "min" . toText
 
 opacityN :: a -> Primitive
-opacityN = Attribute "opacity" . show
+opacityN = Attribute "opacity" . toText
 
 originN :: a -> Primitive
-originN = Attribute "origin" . show
+originN = Attribute "origin" . toText
 
 pathLengthN :: a -> Primitive
-pathLengthN = Attribute "pathLength" . show
+pathLengthN = Attribute "pathLength" . toText
 
 primitiveUnitsN :: a -> Primitive
-primitiveUnitsN = Attribute "primitiveUnits" . show
+primitiveUnitsN = Attribute "primitiveUnits" . toText
 
 rN :: a -> Primitive
-rN = Attribute "r" . show
+rN = Attribute "r" . toText
 
 radiusN :: a -> Primitive
-radiusN = Attribute "radius" . show
+radiusN = Attribute "radius" . toText
 
 refXN :: a -> Primitive
-refXN = Attribute "refX" . show
+refXN = Attribute "refX" . toText
 
 refYN :: a -> Primitive
-refYN = Attribute "refY" . show
+refYN = Attribute "refY" . toText
 
 rxN :: a -> Primitive
-rxN = Attribute "rx" . show
+rxN = Attribute "rx" . toText
 
 ryN :: a -> Primitive
-ryN = Attribute "ry" . show
+ryN = Attribute "ry" . toText
 
 scaleN :: a -> Primitive
-scaleN = Attribute "scale" . show
+scaleN = Attribute "scale" . toText
 
 startOffsetN :: a -> Primitive
-startOffsetN = Attribute "startOffset" . show
+startOffsetN = Attribute "startOffset" . toText
 
 targetXN :: a -> Primitive
-targetXN = Attribute "targetX" . show
+targetXN = Attribute "targetX" . toText
 
 targetYN :: a -> Primitive
-targetYN = Attribute "targetY" . show
+targetYN = Attribute "targetY" . toText
 
 toN :: a -> Primitive
-toN = Attribute "to" . show
+toN = Attribute "to" . toText
 
 u1N :: a -> Primitive
-u1N = Attribute "u1" . show
+u1N = Attribute "u1" . toText
 
 u2N :: a -> Primitive
-u2N = Attribute "u2" . show
+u2N = Attribute "u2" . toText
 
 unitsPerEmN :: a -> Primitive
-unitsPerEmN = Attribute "unitsPerEm" . show
+unitsPerEmN = Attribute "unitsPerEm" . toText
 
 versionN :: a -> Primitive
-versionN = Attribute "version" . show
+versionN = Attribute "version" . toText
 
 widthN :: a -> Primitive
-widthN = Attribute "width" . show
+widthN = Attribute "width" . toText
 
 xN :: a -> Primitive
-xN = Attribute "x" . show
+xN = Attribute "x" . toText
 
 x1N :: a -> Primitive
-x1N = Attribute "x1" . show
+x1N = Attribute "x1" . toText
 
 x2N :: a -> Primitive
-x2N = Attribute "x2" . show
+x2N = Attribute "x2" . toText
 
 yN :: a -> Primitive
-yN = Attribute "y" . show
+yN = Attribute "y" . toText
 
 y1N :: a -> Primitive
-y1N = Attribute "y1" . show
+y1N = Attribute "y1" . toText
 
 y2N :: a -> Primitive
-y2N = Attribute "y2" . show
+y2N = Attribute "y2" . toText
 
 zN :: a -> Primitive
-zN = Attribute "z" . show
+zN = Attribute "z" . toText
