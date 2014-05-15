@@ -204,8 +204,8 @@ slowDown = ksC "0 .2 .8 1"
 -- animate tracing path with current stroke for r repetitions of d duration
 -- l = path length. Pure func called from tracePath
 trace :: Double -> Double -> Double -> Markup
-trace duration r l = markup ! strokeudashoffset (toText l)
-              ! strokeudasharray (concat [ toText l, "," ,toText l])
+trace duration r l = markup ! strokeDashoffset (toText l)
+              ! strokeDasharray (concat [ toText l, "," ,toText l])
               !+ aADR "stroke-dashoffset" duration r ! fill "freeze" !+ ftN l 0
 
 --non-pure SVG specific stuff (animations and namespaces, mostly)
