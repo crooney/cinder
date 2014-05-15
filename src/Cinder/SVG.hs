@@ -21,34 +21,34 @@ xmlns = "http://www.w3.org/2000/svg"
 
 -- convenience methods for simple shapes
 
-cR :: a -> Markup
+cR :: Double -> Markup
 cR = (markup ! circle ! ) . rN
 
-cXYR :: a -> a -> a -> Markup
+cXYR :: Double -> Double -> Double -> Markup
 cXYR x y r = cRXY r x y
 
-cRXY :: a -> a -> a -> Markup
+cRXY :: Double -> Double -> Double -> Markup
 cRXY r x y = cR r ! cxN x ! cyN y
 
-rHW :: a -> a -> Markup
+rHW :: Double -> Double -> Markup
 rHW h w = markup ! rect ! heightN h ! widthN w
 
-rHWXY :: a -> a -> a -> a -> Markup
+rHWXY :: Double -> Double -> Double -> Double -> Markup
 rHWXY h w x y = rHW h w ! xN x ! yN y
 
-rXYHW :: a -> a -> a -> a -> Markup
+rXYHW :: Double -> Double -> Double -> Double -> Markup
 rXYHW x y h w = rHWXY h w x y
 
-eRR :: a -> a -> Markup
+eRR :: Double -> Double -> Markup
 eRR rx ry = markup ! ellipse ! rxN rx ! ryN ry
 
-eRRXY :: a -> a -> a -> a -> Markup
+eRRXY :: Double -> Double -> Double -> Double -> Markup
 eRRXY rx ry x y = eRR rx ry ! cxN x ! cyN y
 
-lXYXY :: a -> a -> a -> a -> Markup
+lXYXY :: Double -> Double -> Double -> Double -> Markup
 lXYXY x y x' y' = markup ! line ! x1N x ! y1N y ! x2N x' ! y2N y'
 
-lXXYY :: a -> a -> a -> a -> Markup
+lXXYY :: Double -> Double -> Double -> Double -> Markup
 -- I know it looks stupid w/o y' but hlint wants I should eta reduce
 lXXYY x x' y = lXYXY x y x'
 
@@ -65,8 +65,23 @@ data Seg = M Double Double
          | T Double Double
          | Z
 
+
 showD :: [Seg] -> Text
-showD = concat . P.map hShow
+showD = concat . P.map (intercalate " " . go)
+          where go (M x y)           = [ " M" , toText x , toText y ]
+                go (L x y)           = [ " L" , toText x , toText y ]
+                go (H x)             = [ " H" , toText x ]
+                go (V x)             = [ " V" , toText x ]
+                go (A x y z a b c w) = [ " A" , toText x , toText y , toText z ,
+                  toText a , toText b , toText c , toText w ]
+                go (C x y z a b c)   = [ " C" , toText x , toText y , toText z ,
+                  toText a , toText b , toText c ]
+                go (S x y z a)       = [ " S" , toText x , toText y , toText z ,
+                  toText a ]
+                go (Q x y z a)       = [ " Q" , toText x , toText y , toText z ,
+                  toText a ]
+                go (T x y)           = [ " T" , toText x , toText y ]
+                go _                 = [ " Z" ]
 
 showDRelative :: [Seg] -> Text
 showDRelative = toLower . showD
@@ -109,19 +124,19 @@ transformT = transform . intercalate "," . P.map go
 -- animation stuff
 
 -- A = attributeName, T = to, B = begin
-setATB :: Text -> Text -> a -> Markup
+setATB :: Text -> Text -> Double -> Markup
 setATB a t b = markup ! set ! attributeName a ! to t ! beginN b
 
 -- D = dur, R = repeatCount
-animationADR :: Text -> a -> Double -> Markup
+animationADR :: Text -> Double -> Double -> Markup
 animationADR a duration r = markup ! attributeName a ! durN duration ! repeatCount (go r)
                      where go x | x > 0 = toText x
                            go _         = "indefinite"
 
-aADR :: Text -> a -> Double -> Markup
+aADR :: Text -> Double -> Double -> Markup
 aADR = (((markup ! animate !+) .) .) . animationADR
 
-atDRT :: a -> Double -> [Transform] -> Markup
+atDRT :: Double -> Double -> [Transform] -> Markup
 atDRT duration r ts = markup ! animateTransform !+ animationADR "transform" duration r
                ! at "type" (transformType $ P.head ts) ! vs (P.map transformVals ts)
 
@@ -132,27 +147,27 @@ beIndef = markup ! begin "indefinite" ! end "indefinite"
 ft :: Text -> Text -> Markup
 ft f t = markup ! from f ! to t
 
-ftN :: a -> a -> Markup
+ftN :: Double -> Double -> Markup
 ftN f t = markup ! fromN f ! toN t
 
 -- turn list into SVG style values list
 vs :: [Text] -> Primitive
 vs = values . isc
 
-vsN :: [a] -> Primitive
+vsN :: [Double] -> Primitive
 vsN = vs . P.map toText
 
 ksC :: Text -> Markup
 ksC = (markup ! calcMode "spline" !) . keySplines
 
-pc :: a -> Text
+pc :: Double -> Text
 pc x  = concat [ toText x, "%" ]
 
 -- slip in semicolon
 isc :: [Text] -> Text
 isc = intercalate ";"
 
-iscN :: [a] -> Text
+iscN :: [Double] -> Text
 iscN = isc . P.map toText
 
 -- draw equilateral polygons n = number of sides, r = distance from center
@@ -277,153 +292,146 @@ typeA = Attribute "type"
 inA :: Text -> Primitive
 inA = Attribute "in"
 
--- HACK!!! to mimic Haskell's show instead of getting JSON
-
-inst :: Automatic a -> Text
-inst = ffi "%1['instance'] + ' '"
-
-slot :: Int -> Automatic a -> Text
-slot = ffi "(%2['slot'+%1] != null && (%2['slot'+%1] + ' ')) || ''"
-
+-- deprecated in favor of `show` instances
 hShow :: Automatic a -> Text
-hShow x = concat $ inst x : P.map (`slot` x) [1 .. 8]
+hShow = fromString . show
 
 -- (possibly) numeric attributes
 
-beginN :: a -> Primitive
-beginN = Attribute "begin" . toText
+beginN :: Double -> Primitive
+beginN = atN "begin"
 
-cxN :: a -> Primitive
-cxN = Attribute "cx" . toText
+cxN :: Double -> Primitive
+cxN = atN "cx"
 
-cyN :: a -> Primitive
-cyN = Attribute "cy" . toText
+cyN :: Double -> Primitive
+cyN = atN "cy"
 
-divisorN :: a -> Primitive
-divisorN = Attribute "divisor" . toText
+divisorN :: Double -> Primitive
+divisorN = atN "divisor"
 
-durN :: a -> Primitive
-durN = Attribute "dur" . toText
+durN :: Double -> Primitive
+durN = atN "dur"
 
-dxN :: a -> Primitive
-dxN = Attribute "dx" . toText
+dxN :: Double -> Primitive
+dxN = atN "dx"
 
-dyN :: a -> Primitive
-dyN = Attribute "dy" . toText
+dyN :: Double -> Primitive
+dyN = atN "dy"
 
-elevationN :: a -> Primitive
-elevationN = Attribute "elevation" . toText
+elevationN :: Double -> Primitive
+elevationN = atN "elevation"
 
-endN :: a -> Primitive
-endN = Attribute "end" . toText
+endN :: Double -> Primitive
+endN = atN "end"
 
-exponentN :: a -> Primitive
-exponentN = Attribute "exponent" . toText
+exponentN :: Double -> Primitive
+exponentN = atN "exponent"
 
-fromN :: a -> Primitive
-fromN = Attribute "from" . toText
+fromN :: Double -> Primitive
+fromN = atN "from"
 
-fxN :: a -> Primitive
-fxN = Attribute "fx" . toText
+fxN :: Double -> Primitive
+fxN = atN "fx"
 
-fyN :: a -> Primitive
-fyN = Attribute "fy" . toText
+fyN :: Double -> Primitive
+fyN = atN "fy"
 
-heightN :: a -> Primitive
-heightN = Attribute "height" . toText
+heightN :: Double -> Primitive
+heightN = atN "height"
 
-interceptN :: a -> Primitive
-interceptN = Attribute "intercept" . toText
+interceptN :: Double -> Primitive
+interceptN = atN "intercept"
 
-kN :: a -> Primitive
-kN = Attribute "k" . toText
+kN :: Double -> Primitive
+kN = atN "k"
 
-lengthAdjustN :: a -> Primitive
-lengthAdjustN = Attribute "lengthAdjust" . toText
+lengthAdjustN :: Double -> Primitive
+lengthAdjustN = atN "lengthAdjust"
 
-maxN :: a -> Primitive
-maxN = Attribute "max" . toText
+maxN :: Double -> Primitive
+maxN = atN "max"
 
-minN :: a -> Primitive
-minN = Attribute "min" . toText
+minN :: Double -> Primitive
+minN = atN "min"
 
-opacityN :: a -> Primitive
-opacityN = Attribute "opacity" . toText
+opacityN :: Double -> Primitive
+opacityN = atN "opacity"
 
-originN :: a -> Primitive
-originN = Attribute "origin" . toText
+originN :: Double -> Primitive
+originN = atN "origin"
 
-pathLengthN :: a -> Primitive
-pathLengthN = Attribute "pathLength" . toText
+pathLengthN :: Double -> Primitive
+pathLengthN = atN "pathLength"
 
-primitiveUnitsN :: a -> Primitive
-primitiveUnitsN = Attribute "primitiveUnits" . toText
+primitiveUnitsN :: Double -> Primitive
+primitiveUnitsN = atN "primitiveUnits"
 
-rN :: a -> Primitive
-rN = Attribute "r" . toText
+rN :: Double -> Primitive
+rN = atN "r"
 
-radiusN :: a -> Primitive
-radiusN = Attribute "radius" . toText
+radiusN :: Double -> Primitive
+radiusN = atN "radius"
 
-refXN :: a -> Primitive
-refXN = Attribute "refX" . toText
+refXN :: Double -> Primitive
+refXN = atN "refX"
 
-refYN :: a -> Primitive
-refYN = Attribute "refY" . toText
+refYN :: Double -> Primitive
+refYN = atN "refY"
 
-rxN :: a -> Primitive
-rxN = Attribute "rx" . toText
+rxN :: Double -> Primitive
+rxN = atN "rx"
 
-ryN :: a -> Primitive
-ryN = Attribute "ry" . toText
+ryN :: Double -> Primitive
+ryN = atN "ry"
 
-scaleN :: a -> Primitive
-scaleN = Attribute "scale" . toText
+scaleN :: Double -> Primitive
+scaleN = atN "scale"
 
-startOffsetN :: a -> Primitive
-startOffsetN = Attribute "startOffset" . toText
+startOffsetN :: Double -> Primitive
+startOffsetN = atN "startOffset"
 
-targetXN :: a -> Primitive
-targetXN = Attribute "targetX" . toText
+targetXN :: Double -> Primitive
+targetXN = atN "targetX"
 
-targetYN :: a -> Primitive
-targetYN = Attribute "targetY" . toText
+targetYN :: Double -> Primitive
+targetYN = atN "targetY"
 
-toN :: a -> Primitive
-toN = Attribute "to" . toText
+toN :: Double -> Primitive
+toN = atN "to"
 
-u1N :: a -> Primitive
-u1N = Attribute "u1" . toText
+u1N :: Double -> Primitive
+u1N = atN "u1"
 
-u2N :: a -> Primitive
-u2N = Attribute "u2" . toText
+u2N :: Double -> Primitive
+u2N = atN "u2"
 
-unitsPerEmN :: a -> Primitive
-unitsPerEmN = Attribute "unitsPerEm" . toText
+unitsPerEmN :: Double -> Primitive
+unitsPerEmN = atN "unitsPerEm"
 
-versionN :: a -> Primitive
-versionN = Attribute "version" . toText
+versionN :: Double -> Primitive
+versionN = atN "version"
 
-widthN :: a -> Primitive
-widthN = Attribute "width" . toText
+widthN :: Double -> Primitive
+widthN = atN "width"
 
-xN :: a -> Primitive
-xN = Attribute "x" . toText
+xN :: Double -> Primitive
+xN = atN "x"
 
-x1N :: a -> Primitive
-x1N = Attribute "x1" . toText
+x1N :: Double -> Primitive
+x1N = atN "x1"
 
-x2N :: a -> Primitive
-x2N = Attribute "x2" . toText
+x2N :: Double -> Primitive
+x2N = atN "x2"
 
-yN :: a -> Primitive
-yN = Attribute "y" . toText
+yN :: Double -> Primitive
+yN = atN "y"
 
-y1N :: a -> Primitive
-y1N = Attribute "y1" . toText
+y1N :: Double -> Primitive
+y1N = atN "y1"
 
-y2N :: a -> Primitive
-y2N = Attribute "y2" . toText
+y2N :: Double -> Primitive
+y2N = atN "y2"
 
-zN :: a -> Primitive
-zN = Attribute "z" . toText
+zN :: Double -> Primitive
+zN = atN "z"

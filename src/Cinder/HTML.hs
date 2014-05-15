@@ -154,63 +154,63 @@ typemustmatchB = Attribute "typemustmatch" ""
 
 -- (possibly) numeric attributes
 
-colsN :: a -> Primitive
-colsN = Attribute "cols" . toText
+colsN :: Double -> Primitive
+colsN = atN "cols"
 
-colspanN :: a -> Primitive
-colspanN = Attribute "colspan" . toText
+colspanN :: Double -> Primitive
+colspanN = atN "colspan"
 
-coordsN :: a -> Primitive
-coordsN = Attribute "coords" . toText
+coordsN :: Double -> Primitive
+coordsN = atN "coords"
 
-datetimeN :: a -> Primitive
-datetimeN = Attribute "datetime" . toText
+datetimeN :: Double -> Primitive
+datetimeN = atN "datetime"
 
-heightN :: a -> Primitive
-heightN = Attribute "height" . toText
+heightN :: Double -> Primitive
+heightN = atN "height"
 
-highN :: a -> Primitive
-highN = Attribute "high" . toText
+highN :: Double -> Primitive
+highN = atN "high"
 
-lowN :: a -> Primitive
-lowN = Attribute "low" . toText
+lowN :: Double -> Primitive
+lowN = atN "low"
 
-maxN :: a -> Primitive
-maxN = Attribute "max" . toText
+maxN :: Double -> Primitive
+maxN = atN "max"
 
-maxlengthN :: a -> Primitive
-maxlengthN = Attribute "maxlength" . toText
+maxlengthN :: Double -> Primitive
+maxlengthN = atN "maxlength"
 
-minN :: a -> Primitive
-minN = Attribute "min" . toText
+minN :: Double -> Primitive
+minN = atN "min"
 
-optimumN :: a -> Primitive
-optimumN = Attribute "optimum" . toText
+optimumN :: Double -> Primitive
+optimumN = atN "optimum"
 
-rowsN :: a -> Primitive
-rowsN = Attribute "rows" . toText
+rowsN :: Double -> Primitive
+rowsN = atN "rows"
 
-rowspanN :: a -> Primitive
-rowspanN = Attribute "rowspan" . toText
+rowspanN :: Double -> Primitive
+rowspanN = atN "rowspan"
 
-sizeN :: a -> Primitive
-sizeN = Attribute "size" . toText
+sizeN :: Double -> Primitive
+sizeN = atN "size"
 
-spanN :: a -> Primitive
-spanN = Attribute "span" . toText
+spanN :: Double -> Primitive
+spanN = atN "span"
 
-startN :: a -> Primitive
-startN = Attribute "start" . toText
+startN :: Double -> Primitive
+startN = atN "start"
 
-stepN :: a -> Primitive
-stepN = Attribute "step" . toText
+stepN :: Double -> Primitive
+stepN = atN "step"
 
-tabindexN :: a -> Primitive
-tabindexN = Attribute "tabindex" . toText
+tabindexN :: Double -> Primitive
+tabindexN = atN "tabindex"
 
-valueN :: a -> Primitive
-valueN = Attribute "value" . toText
+valueN :: Double -> Primitive
+valueN = atN "value"
 
-widthN :: a -> Primitive
-widthN = Attribute "width" . toText
+widthN :: Double -> Primitive
+widthN = atN "width"
 

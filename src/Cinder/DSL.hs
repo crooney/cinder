@@ -88,7 +88,7 @@ closeAll m = if n >= 0 then replicate n Complete ++ m
 at :: DString -> DString -> Primitive
 at = Attribute
 
-atN :: DString -> a -> Primitive
+atN :: DString -> Double -> Primitive
 atN t v = Attribute t (pack $ show v)
 
 atP :: DString -> Double -> Primitive
