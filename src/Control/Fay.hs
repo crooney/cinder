@@ -2,7 +2,6 @@
 module Control.Fay
     (
     ap
-    ,mapM
     ,foldM
     ,zipWithM
     ,zipWithM_
@@ -15,9 +14,6 @@ import           Prelude hiding (mapM)
 
 ap :: Fay (a -> b) -> Fay a -> Fay b
 ap f x = f >>= \f' -> x >>= \x' -> return (f' x')
-
-mapM :: (a -> Fay b) -> [a] -> Fay [b]
-mapM = (sequence .) . map
 
 foldM :: (a -> b -> Fay a) -> a -> [b] -> Fay a
 foldM _ x [] = return x
