@@ -23,6 +23,7 @@ data-files: src/Cinder/DOM.hs
             src/Cinder/SVG/Attributes.hs
             src/Cinder/SVG/Elements.hs
             src/Cinder/DSL.hs
+            src/Control/Fay.hs
 
 source-repository head
   type: git
@@ -38,6 +39,7 @@ library
                    Cinder.SVG.Attributes
                    Cinder.SVG.Elements
                    Cinder.DSL
+                   Control.Fay
   ghc-options: -Wall
   build-depends:
     fay-base >= 0.19,
