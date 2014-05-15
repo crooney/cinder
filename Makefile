@@ -1,9 +1,7 @@
 FAY=fay
-FAYFLAGS=--pretty --include src
+FAYFLAGS=--pretty --package fay-base,fay-text,cinder
 
 DEPENDS=$(wildcard src/*/*.hs)
-TARGET=build/DOM.js
-SOURCE=src/Cinder/DOM.hs
 
 EX_SRC=$(wildcard examples/*.hs)
 EXAMPLES=$(patsubst %.hs,%.js,$(EX_SRC))
@@ -16,22 +14,18 @@ LANGS_GEN+=$(patsubst %,src/Cinder/%/Elements.hs,$(LANGS))
 
 UTILS=$(wildcard util/*)
 
-all: $(TARGET) langs examples
+all: langs cabal examples
 
-$(TARGET): FAYFLAGS+= --library
-$(TARGET): build $(SOURCE) $(DEPENDS)
-	$(FAY) $(FAYFLAGS) -o $@ $(SOURCE)
+cabal: $(DEPENDS)
+	cabal install
 
-examples: $(EX_SVG) $(EX_HTML) $(TARGET) $(EXAMPLES)
+examples: $(EX_SVG) $(EX_HTML) cabal $(EXAMPLES)
 
-release: FAYFLAGS=--closure --no-builtins -O --include src
+release: FAYFLAGS=--closure --no-builtins -O --package fay-base,fay-text,cinder
 release: clean all
 
 %.js: %.hs
 	$(FAY) $(FAYFLAGS) -o $@ $<
-
-build:
-	mkdir -p build
 
 $(EX_SVG): template.svg
 
@@ -60,7 +54,6 @@ langs: $(UTILS) $(LANGS_GEN)
 
 .PHONY: clean
 clean:
-	rm -fr build
 	rm -f examples/*.js examples/*.html examples/*.svg
 
 .PHONY: squeaky
