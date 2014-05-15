@@ -1,7 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax #-}
+
 module Graph (main) where
 
 import Prelude hiding (id)
 import FFI
+import Fay.Text (Text, fromString)
 import Control.Fay
 import Cinder.SVG
 import Cinder.SVG.Attributes
@@ -54,7 +58,7 @@ barPaths xs = zipWith go xs [1,3 ..]
           gb = orig + side
           r = side / 2
 
-switch :: String -> Fay ()
+switch :: Text -> Fay ()
 -- this is all that's necessary for FF and I think is correct.
 -- switch next = root >>= byClass next >>= mapM_ start
 -- full version is to placate Chromium
@@ -73,7 +77,7 @@ orig, side :: Double
 orig= -200
 side = 400
 
-colors :: [String]
+colors :: [Text]
 colors = ["lightpink","lightblue","lightsalmon","lightgreen","khaki","cyan"]
 
 str :: Markup
@@ -84,10 +88,10 @@ frz = fill "freeze"
 
 data Event
 
-setListener :: String -> (Event -> Fay ()) -> Node -> Fay ()
+setListener :: Text -> (Event -> Fay ()) -> Node -> Fay ()
 setListener = ffi "%3['addEventListener'](%1,%2,null)"
 
-addEventListener :: String -> Fay () -> Bool -> Fay ()
+addEventListener :: Text -> Fay () -> Bool -> Fay ()
 addEventListener = ffi "window['addEventListener'](%1,%2,%3)"
 
 main :: Fay ()

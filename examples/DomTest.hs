@@ -1,7 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax #-}
+
 module DomTest (main) where
 
 import Prelude
 import FFI
+import Fay.Text
 import Cinder.SVG
 import Cinder.SVG.Attributes
 import Cinder.SVG.Elements
@@ -11,7 +15,7 @@ main = addEventListener "load" dt False
 
 dt :: Fay ()
 dt = do
-    putStrLn $ pretty mu
+    putStrLn $ show $ pretty mu
     root >>= insert mu
     return ()
     where mu = cRXY 40 100 100 ! fill "blue" ! stroke "yellow"
@@ -21,5 +25,5 @@ dt = do
                 !: " and some more"
              !< Complete
 
-addEventListener :: String -> Fay () -> Bool -> Fay ()
+addEventListener :: Text -> Fay () -> Bool -> Fay ()
 addEventListener = ffi "window['addEventListener'](%1,%2,%3)"

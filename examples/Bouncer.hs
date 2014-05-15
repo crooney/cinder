@@ -1,7 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax #-}
+
 module Bouncer (main) where
 
 import Prelude
 import FFI
+import Fay.Text (Text, fromString)
 import Control.Fay
 import Cinder.SVG
 import Cinder.SVG.Attributes
@@ -29,5 +33,5 @@ bouncer = do
 main :: Fay ()
 main = addEventListener "load" bouncer False
 
-addEventListener :: String -> Fay () -> Bool -> Fay ()
+addEventListener :: Text -> Fay () -> Bool -> Fay ()
 addEventListener = ffi "window['addEventListener'](%1,%2,%3)"

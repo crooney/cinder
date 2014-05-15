@@ -1,7 +1,11 @@
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax #-}
+
 module Htest (main) where
 
 import Prelude hiding (id,div)
 import FFI
+import Fay.Text
 import Cinder.HTML
 import Cinder.HTML.Elements
 import Cinder.HTML.Attributes hiding (style)
@@ -12,8 +16,8 @@ main = addEventListener "load" htest False
 htest :: Fay ()
 htest = byId "BODY" >>= insert mu
         >> byId "HEAD" >>= insert st
-        >> putStrLn (pretty st)
-        >> putStrLn (pretty mu)
+        >> putStrLn (show $ pretty st)
+        >> putStrLn (show $ pretty mu)
     where mu = markup
                 ! div ! id "foo"
                     ! p !+ iX "hello " !+ bX "there" !< Complete
@@ -24,5 +28,5 @@ htest = byId "BODY" >>= insert mu
           st = markup ! style ! typeA "text/css"
                 !: ".classy {border: solid blue 2px;}" ! Complete
 
-addEventListener :: String -> Fay () -> Bool -> Fay ()
+addEventListener :: Text -> Fay () -> Bool -> Fay ()
 addEventListener = ffi "window['addEventListener'](%1,%2,%3)"
