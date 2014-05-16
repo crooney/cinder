@@ -7,7 +7,6 @@ import Prelude
 import FFI
 import Fay.Text
 import Cinder.SVG
---import Control.Fay
 
 main :: Fay ()
 main = addEventListener "load" nifty False

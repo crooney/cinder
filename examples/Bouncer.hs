@@ -10,6 +10,10 @@ import Control.Fay
 import Cinder.SVG
 import Cinder.SVG.Attributes
 
+-- Dummy for typechecker, never actually called
+fromRational :: b -> a
+fromRational = ffi "%1"
+
 bouncer :: Fay ()
 bouncer = do
     g <- node "g" >>= insert circ

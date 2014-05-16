@@ -9,7 +9,13 @@ import Fay.Text (Text, fromString)
 import Control.Fay
 import Cinder.SVG
 import Cinder.SVG.Attributes
-import System.Random
+
+-- Dummy for typechecker, never actually called
+fromRational :: b -> a
+fromRational = ffi "%1"
+
+boundedRand :: Int -> Fay Double
+boundedRand = ffi "Math.floor(%1 * Math.random())"
 
 setup :: Fay ()
 setup = do
